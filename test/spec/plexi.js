@@ -37,6 +37,44 @@ describe('plexi', function () {
     }
   });
 
+  it('should load configuration', function () {
+    var config = {
+      BodyType: {
+        'hero': {
+          behaviors: ['Rectangle'],
+          width: 100,
+          height: 100,
+        },
+      },
+    };
+
+    plexi.load(config);
+    expect(plexi.module('BodyType').length()).toBe(1);
+
+  });
+
+  it('should refresh configuration if new', function () {
+    var config = {
+      BodyType: {
+        'hero1': {
+          behaviors: ['Rectangle'],
+          width: 100,
+          height: 100,
+        },
+      },
+    };
+    plexi.load(config);
+    expect(plexi.module('BodyType').length()).toBe(1);
+  });
+
+  it('should reset all modules', function () {
+    plexi.reset();
+    plexi.modules().forEach(function (m) {
+      expect(m.length()).toBe(0);
+    });
+  });
+
+
   describe('module functionality', function () {
 
     it('should have base module functionality', function () {

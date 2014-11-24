@@ -26,13 +26,14 @@ program
   .parse(process.argv);
 
 var prod = !!program.prod;
-var testFiles = ['src/**/*.js', 'test/spec/**/*.js'];
+var sourceFiles = ['src/*.js', 'src/core/*.js', 'src/behaviors/*.js'];
+var testFiles = sourceFiles.concat(['test/spec/**/*.js']);
 gulp.task('default', ['build']);
 
 gulp.task('build', ['build_source', 'build_app', 'build_index', 'build_styles']);
 
 gulp.task('build_source', function () {
-  return gulp.src(['src/**/*.js'])
+  return gulp.src(sourceFiles)
     .pipe(plugins.concat('plexi.js'))
     .pipe(gulp.dest('build'));
 });
