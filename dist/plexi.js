@@ -19,26 +19,28 @@ var plexi = (function () {
     //if (!i) {return;}
     //klass.properties = i.properties || [];
     //klass.constants = i.constants || [];
-    klass.prototype.addProps = function (arr) {
-      //console.log(this);
-      arr.forEach(function (p) {
-        if (this.properties.indexOf(p) < 0) {
-          this.properties.push(p);
-        }
-      }.bind(this));
-    };
-    klass.prototype.prop = function (body, key) {
-      if (body.hasOwnProperty(key)) {
-        return body[key];
-      } else if (this.hasOwnProperty(key)) {
-        return this[key];
-      } else if (this.constants.hasOwnProperty(key)) {
-        return this.constants[key];
-      } else {
-        console.log('invalid property name: ' + key + ' called on: ' + body.type);
-        return;
+    klass.prototype.addProps = addProps;
+    klass.prototype.prop = getProp;
+  }
+  function addProps(arr) {
+    arr.forEach(function (p) {
+      if (this.properties.indexOf(p) < 0) {
+        this.properties.push(p);
       }
-    };
+    }.bind(this));
+  }
+  function getProp(body, key) {
+    if (body.hasOwnProperty(key)) {
+      return body[key];
+    } else if (this.hasOwnProperty(key)) {
+      return this[key];
+    } else if (this.constants.hasOwnProperty(key)) {
+      return this.constants[key];
+    } else {
+      console.log('invalid property name: ' + key + ' called on: ' + body.type);
+      return;
+    }
+
   }
 
   function applyKlassBehaviors(klass, behaviors) {
@@ -64,7 +66,7 @@ var plexi = (function () {
         if (bhvr) {
           bhvr.applyToInstance(instance);
         }
-      })
+      });
     }
   }
   function cleanInstance(i) {
