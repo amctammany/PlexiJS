@@ -17,4 +17,28 @@ describe('plexi::BodyType', function () {
 
     expect(!!body).toBe(true);
   });
+
+  it('should create BodyType with states', function () {
+    var readyState = [
+          ['fill', 'blue'],
+          ['stroke', 'black']
+        ];
+    var deadState = [
+          ['fill', 'black'],
+          ['stroke', 'red']
+        ];
+
+
+    var type = BodyType.create('type', {
+      states: {
+        'ready': readyState,
+        'dead': deadState,
+      },
+    });
+    expect(!!type).toBe(true);
+    expect(type.statuses).toContain('ready');
+    expect(type.statuses).toContain('dead');
+    expect(type.states.ready).toBe(readyState);
+    expect(type.states.dead).toBe(deadState);
+  });
 });

@@ -4,6 +4,8 @@ var config = {
   Canvas: {
     'main': {
       element: 'game-canvas',
+      width: 500,
+      height: 500
     },
   },
   BodyType: {

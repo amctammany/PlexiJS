@@ -73,6 +73,7 @@ var plexi = (function () {
     i.ivars = i.properties.filter(function (p) {
       return !i.constants.hasOwnProperty(p);
     });
+    i.valid = (i.ivars.length > 0) ? false : true;
   }
 
   var defineMixin = function (mixin) {
@@ -129,6 +130,7 @@ var plexi = (function () {
         //console.log(cb);
         if (cb && cb instanceof Function) {
           _modules[id] = cb(requireModule, defineModule);
+          _modules[id].id = id;
           return _modules[id];
         } else {
 
@@ -165,6 +167,7 @@ var plexi = (function () {
       if (_config !== config) {
         plexi.reset();
         _config = config;
+        _constants = {};
       }
       Object.keys(_config).forEach(function (key) {
         if (_modules.hasOwnProperty(key)) {
@@ -173,6 +176,20 @@ var plexi = (function () {
           });
         } else {
           _constants[key] = config[key];
+        }
+      });
+    },
+    constants: function (key) {
+      return _constants[key];
+    },
+
+    applyConfig: function (obj, config, priv) {
+      obj.constants = obj.constants || {};
+      Object.keys(config).forEach(function (key) {
+        if (priv.hasOwnProperty(key) && priv[key] instanceof Function) {
+          priv[key].call(obj, config[key]);
+        } else {
+          obj.constants[key] = config[key];
         }
       });
     },
@@ -232,13 +249,14 @@ plexi.module('BodyType', function (require, define) {
     this.constants = {};
     //this.methods = [];
     //this.proto = {};
-    Object.keys(config).forEach(function (key) {
-      if (_private.hasOwnProperty(key) && _private[key] instanceof Function) {
-        _private[key].call(this, config[key]);
-      } else {
-        this.constants[key] = config[key];
-      }
-    }.bind(this));
+    plexi.applyConfig(this, config, _private);
+    //Object.keys(config).forEach(function (key) {
+      //if (_private.hasOwnProperty(key) && _private[key] instanceof Function) {
+        //_private[key].call(this, config[key]);
+      //} else {
+        //this.constants[key] = config[key];
+      //}
+    //}.bind(this));
 
   };
 
@@ -247,6 +265,56 @@ plexi.module('BodyType', function (require, define) {
   };
 
   return define(BodyType);
+});
+
+'use strict';
+
+plexi.module('Canvas', function (require, define) {
+  var _private = {
+    drawMethods: {},
+  };
+  var BodyType = require('BodyType');
+
+  var Canvas = function (id, config) {
+    this.id = id;
+
+    this.properties = ['element', 'width', 'height'];
+    this.dirty = true;
+
+    this.$canvas = void 0;
+    this.ctx = void 0;
+
+    plexi.applyConfig(this, config, _private);
+  };
+
+
+  Canvas.prototype.init = function () {
+    if (!this.valid) {return false;}
+    this.$canvas = document.getElementById(this.constants.element);
+    this.$canvas = this.$canvas || document.createElement('canvas');
+    this.$canvas.width = this.constants.width;
+    this.$canvas.height = this.constants.height;
+    this.ctx = this.$canvas.getContext('2d');
+    //this.width = this.$canvas.width;
+    //this.height = this.$canvas.height;
+    BodyType.children().forEach(function (t) {
+      _private.drawMethods[t.id] = t.draw.bind(t);
+    });
+    this.dirty = false;
+    return this;
+
+  };
+  Canvas.prototype.draw = function (world) {
+    var ctx = this.ctx;
+    ctx.clearRect(0, 0, this.constants.width, this.constants.height);
+    world.bodies.forEach(function (body) {
+      _private.drawMethods[body.type](ctx, body);
+    });
+  };
+
+
+  return define(Canvas);
+
 });
 
 'use strict';

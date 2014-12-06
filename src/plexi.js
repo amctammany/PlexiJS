@@ -73,6 +73,7 @@ var plexi = (function () {
     i.ivars = i.properties.filter(function (p) {
       return !i.constants.hasOwnProperty(p);
     });
+    i.valid = (i.ivars.length > 0) ? false : true;
   }
 
   var defineMixin = function (mixin) {
@@ -129,6 +130,7 @@ var plexi = (function () {
         //console.log(cb);
         if (cb && cb instanceof Function) {
           _modules[id] = cb(requireModule, defineModule);
+          _modules[id].id = id;
           return _modules[id];
         } else {
 
@@ -165,6 +167,7 @@ var plexi = (function () {
       if (_config !== config) {
         plexi.reset();
         _config = config;
+        _constants = {};
       }
       Object.keys(_config).forEach(function (key) {
         if (_modules.hasOwnProperty(key)) {
@@ -173,6 +176,20 @@ var plexi = (function () {
           });
         } else {
           _constants[key] = config[key];
+        }
+      });
+    },
+    constants: function (key) {
+      return _constants[key];
+    },
+
+    applyConfig: function (obj, config, priv) {
+      obj.constants = obj.constants || {};
+      Object.keys(config).forEach(function (key) {
+        if (priv.hasOwnProperty(key) && priv[key] instanceof Function) {
+          priv[key].call(obj, config[key]);
+        } else {
+          obj.constants[key] = config[key];
         }
       });
     },

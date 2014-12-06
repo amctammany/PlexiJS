@@ -21,13 +21,14 @@ plexi.module('BodyType', function (require, define) {
     this.constants = {};
     //this.methods = [];
     //this.proto = {};
-    Object.keys(config).forEach(function (key) {
-      if (_private.hasOwnProperty(key) && _private[key] instanceof Function) {
-        _private[key].call(this, config[key]);
-      } else {
-        this.constants[key] = config[key];
-      }
-    }.bind(this));
+    plexi.applyConfig(this, config, _private);
+    //Object.keys(config).forEach(function (key) {
+      //if (_private.hasOwnProperty(key) && _private[key] instanceof Function) {
+        //_private[key].call(this, config[key]);
+      //} else {
+        //this.constants[key] = config[key];
+      //}
+    //}.bind(this));
 
   };
 
