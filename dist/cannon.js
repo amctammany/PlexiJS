@@ -14,7 +14,15 @@ var config = {
       width: 25,
       height: 25
     },
+    'enemy': {
+      behaviors: ['Circle'],
+      radius: 15,
+    },
   },
 };
 
 plexi.load(config);
+
+var hero = plexi.module('BodyType').get('hero');
+var enemy = plexi.module('BodyType').get('enemy');
+var ctx = plexi.module('Canvas').children()[0].init().ctx;

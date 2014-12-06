@@ -3,6 +3,7 @@
 describe('plexi::BodyType', function () {
   var BodyType;
   beforeEach(function () {
+    plexi.reset();
     BodyType = plexi.module('BodyType');
   });
 
@@ -41,4 +42,25 @@ describe('plexi::BodyType', function () {
     expect(type.states.ready).toBe(readyState);
     expect(type.states.dead).toBe(deadState);
   });
+
+  it('should create body', function () {
+    var type = BodyType.create('type', {
+      behaviors: ['Rectangle'],
+      width: 100,
+      height: 100,
+    });
+
+    var body = type.createBody({
+      x: 10,
+      y: 20
+    });
+
+    expect(!!body).toBe(true);
+    expect(body.bodytype).toBe('type');
+    expect(body.x).toBe(10);
+    expect(body.y).toBe(20);
+
+  });
+
+
 });

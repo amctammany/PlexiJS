@@ -18,21 +18,18 @@ plexi.module('BodyType', function (require, define) {
 
   var BodyType = function (id, config) {
     this.id = id;
-    this.constants = {};
-    //this.methods = [];
-    //this.proto = {};
     plexi.applyConfig(this, config, _private);
-    //Object.keys(config).forEach(function (key) {
-      //if (_private.hasOwnProperty(key) && _private[key] instanceof Function) {
-        //_private[key].call(this, config[key]);
-      //} else {
-        //this.constants[key] = config[key];
-      //}
-    //}.bind(this));
 
   };
 
   BodyType.prototype.createBody = function (config) {
+
+    var body = {bodytype: this.id};
+    Object.keys(config).forEach(function (key) {
+      body[key] = config[key];
+    });
+
+    return body;
 
   };
 

@@ -92,7 +92,7 @@ var plexi = (function () {
         var Klass = function () {
           constructor.call(this, id, config);
         };
-        Klass.prototype = constructor.prototype;
+        Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
         decorateKlass(Klass);
         applyKlassBehaviors(Klass, config.behaviors);
@@ -101,7 +101,6 @@ var plexi = (function () {
         applyInstanceBehaviors(i, config.behaviors);
         cleanInstance(i);
         module._children[id] = i;
-        //Klass.valid = (Klass.ivars.length > 0) ? false : true;
         return i;
       },
       reset: function () {

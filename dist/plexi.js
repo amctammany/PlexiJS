@@ -92,7 +92,7 @@ var plexi = (function () {
         var Klass = function () {
           constructor.call(this, id, config);
         };
-        Klass.prototype = constructor.prototype;
+        Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
         decorateKlass(Klass);
         applyKlassBehaviors(Klass, config.behaviors);
@@ -101,7 +101,6 @@ var plexi = (function () {
         applyInstanceBehaviors(i, config.behaviors);
         cleanInstance(i);
         module._children[id] = i;
-        //Klass.valid = (Klass.ivars.length > 0) ? false : true;
         return i;
       },
       reset: function () {
@@ -246,21 +245,18 @@ plexi.module('BodyType', function (require, define) {
 
   var BodyType = function (id, config) {
     this.id = id;
-    this.constants = {};
-    //this.methods = [];
-    //this.proto = {};
     plexi.applyConfig(this, config, _private);
-    //Object.keys(config).forEach(function (key) {
-      //if (_private.hasOwnProperty(key) && _private[key] instanceof Function) {
-        //_private[key].call(this, config[key]);
-      //} else {
-        //this.constants[key] = config[key];
-      //}
-    //}.bind(this));
 
   };
 
   BodyType.prototype.createBody = function (config) {
+
+    var body = {bodytype: this.id};
+    Object.keys(config).forEach(function (key) {
+      body[key] = config[key];
+    });
+
+    return body;
 
   };
 
@@ -314,6 +310,45 @@ plexi.module('Canvas', function (require, define) {
 
 
   return define(Canvas);
+
+});
+
+'use strict';
+
+plexi.behavior('Circle', function (require, define) {
+  var Circle = function () {
+    this.addProps(['x', 'y', 'radius']);
+  };
+
+  Circle.prototype = {
+
+    draw: function (ctx, body) {
+      ctx.fillStyle = this.prop(body, 'fill');
+      ctx.strokeStyle = this.prop(body, 'stroke');
+      this.createPath(ctx, body);
+      ctx.fill();
+      ctx.stroke();
+    },
+    createPath: function (ctx, body) {
+      ctx.beginPath();
+      ctx.arc(this.prop(body, 'x'), this.prop(body, 'y'), 20, 0, 6.28, 0);
+      ctx.closePath();
+    },
+
+    isPointInPath: function (ctx, body, x, y) {
+      this.createPath(ctx, body);
+      return ctx.isPointInPath(x, y);
+    },
+
+    //select: function (body) {
+      //var state = body.state === 'selected' ? 'default' : 'selected';
+      //this.changeState(body, state);
+      ////body.fill = 'red';
+    //},
+
+  };
+
+  return define(Circle);
 
 });
 
