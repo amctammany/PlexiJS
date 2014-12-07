@@ -35,5 +35,14 @@ plexi.module('Stage', function (require, define) {
 
   };
 
+  Stage.dispatch = {
+    'change': function (args) {
+      this.reset();
+      plexi.publish([['World', 'reset'], ['Game', 'refresh']]);
+    },
+
+  };
+
+
   return define(Stage);
 });

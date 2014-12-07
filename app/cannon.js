@@ -59,6 +59,14 @@ var config = {
         {type: 'hero', x: 250, y: 250},
       ],
     },
+    'second': {
+      bodies: [
+        {type: 'hero', x: 150, y: 50},
+        {type: 'enemy', x: 50, y: 150},
+        {type: 'hero', x: 20, y: 350},
+      ],
+    },
+
   },
   Level: {
     'one': {
@@ -77,7 +85,7 @@ var config = {
     },
     'selected': {
       events: {
-        'mousedown': ['Mouse', 'change', 'default'],
+        'mousedown': [['Mouse', 'change', 'default'], ['Stage', 'change', 'second']],
       },
     },
   },

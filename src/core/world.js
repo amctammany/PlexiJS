@@ -12,24 +12,6 @@ plexi.module('World', function (require, define) {
     plexi.applyConfig(this, config, _private);
   };
 
-  World.dispatch = {
-    select: function (x, y) {
-      var ctx = Canvas.current().ctx;
-      var bodies = this.bodies.filter(function (b) {
-        return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
-      });
-      //console.log(bodies);
-      var type;
-      bodies.forEach(function (b) {
-        type = BodyType.get(b.type);
-        if (!type.select) { return; }
-        type.select(b);
-
-      });
-    },
-
-  };
-
   World.prototype.init = function () {
     this.bodies = [];
     this.forces = [];
@@ -51,6 +33,28 @@ plexi.module('World', function (require, define) {
   World.prototype.reset = function () {
     this.bodies = [];
     this.forces = [];
+  };
+
+  World.dispatch = {
+    select: function (x, y) {
+      var ctx = Canvas.current().ctx;
+      var bodies = this.bodies.filter(function (b) {
+        return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
+      });
+      //console.log(bodies);
+      var type;
+      bodies.forEach(function (b) {
+        type = BodyType.get(b.type);
+        if (!type.select) { return; }
+        type.select(b);
+
+      });
+    },
+
+    reset: function () {
+      this.reset();
+    },
+
   };
 
   return define(World);

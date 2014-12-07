@@ -511,6 +511,11 @@ plexi.module('Game', function (require, define) {
     console.log('reset game: ' + this);
   };
 
+  Game.dispatch = {
+    refresh: function () {
+      this.refresh();
+    },
+  };
   return define(Game);
 
 });
@@ -590,6 +595,15 @@ plexi.module('Stage', function (require, define) {
 
   };
 
+  Stage.dispatch = {
+    'change': function (args) {
+      this.reset();
+      plexi.publish([['World', 'reset'], ['Game', 'refresh']]);
+    },
+
+  };
+
+
   return define(Stage);
 });
 
@@ -605,24 +619,6 @@ plexi.module('World', function (require, define) {
   var World = function (id, config) {
     this.id = id;
     plexi.applyConfig(this, config, _private);
-  };
-
-  World.dispatch = {
-    select: function (x, y) {
-      var ctx = Canvas.current().ctx;
-      var bodies = this.bodies.filter(function (b) {
-        return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
-      });
-      //console.log(bodies);
-      var type;
-      bodies.forEach(function (b) {
-        type = BodyType.get(b.type);
-        if (!type.select) { return; }
-        type.select(b);
-
-      });
-    },
-
   };
 
   World.prototype.init = function () {
@@ -646,6 +642,28 @@ plexi.module('World', function (require, define) {
   World.prototype.reset = function () {
     this.bodies = [];
     this.forces = [];
+  };
+
+  World.dispatch = {
+    select: function (x, y) {
+      var ctx = Canvas.current().ctx;
+      var bodies = this.bodies.filter(function (b) {
+        return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
+      });
+      //console.log(bodies);
+      var type;
+      bodies.forEach(function (b) {
+        type = BodyType.get(b.type);
+        if (!type.select) { return; }
+        type.select(b);
+
+      });
+    },
+
+    reset: function () {
+      this.reset();
+    },
+
   };
 
   return define(World);

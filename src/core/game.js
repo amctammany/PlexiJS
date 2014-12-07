@@ -51,6 +51,11 @@ plexi.module('Game', function (require, define) {
     console.log('reset game: ' + this);
   };
 
+  Game.dispatch = {
+    refresh: function () {
+      this.refresh();
+    },
+  };
   return define(Game);
 
 });
