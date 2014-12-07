@@ -22,7 +22,7 @@ plexi.module('Canvas', function (require, define) {
   Canvas.prototype.init = function () {
     if (!this.valid) {console.log('bad canvas'); return false;}
     this.$canvas = document.getElementById(this.constants.element);
-    //this.$canvas = this.$canvas || document.createElement('canvas');
+    this.$canvas = this.$canvas || document.createElement('canvas');
     this.$canvas.width = this.constants.width;
     this.$canvas.height = this.constants.height;
     this.ctx = this.$canvas.getContext('2d');

@@ -4,8 +4,8 @@ describe('plexi::World', function () {
   var World;
   var level = {
     bodies: [
-      {type: 't1', x: 10, y: 15},
-      {type: 't2', x: 20, y: 25},
+      {type: 't1', config: {x: 10, y: 15}},
+      {type: 't2', config: {x: 20, y: 25}},
     ]
   };
 

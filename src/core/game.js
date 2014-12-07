@@ -40,7 +40,6 @@ plexi.module('Game', function (require, define) {
     _world = World.current();
     _canvas = Canvas.current();
     _stage = Stage.current();
-    console.log(_world);
     _world.load(_stage);
     this.start();
   };

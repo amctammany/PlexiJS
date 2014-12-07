@@ -168,7 +168,7 @@ var plexi = (function () {
     },
     load: function (config) {
       if (_config !== config) {
-        //plexi.reset();
+        plexi.reset();
         _config = config;
         _constants = {};
       }
@@ -302,7 +302,7 @@ plexi.module('Canvas', function (require, define) {
   Canvas.prototype.init = function () {
     if (!this.valid) {console.log('bad canvas'); return false;}
     this.$canvas = document.getElementById(this.constants.element);
-    //this.$canvas = this.$canvas || document.createElement('canvas');
+    this.$canvas = this.$canvas || document.createElement('canvas');
     this.$canvas.width = this.constants.width;
     this.$canvas.height = this.constants.height;
     this.ctx = this.$canvas.getContext('2d');
@@ -374,7 +374,6 @@ plexi.module('Game', function (require, define) {
     _world = World.current();
     _canvas = Canvas.current();
     _stage = Stage.current();
-    console.log(_world);
     _world.load(_stage);
     this.start();
   };

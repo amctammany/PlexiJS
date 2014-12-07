@@ -168,7 +168,7 @@ var plexi = (function () {
     },
     load: function (config) {
       if (_config !== config) {
-        //plexi.reset();
+        plexi.reset();
         _config = config;
         _constants = {};
       }
