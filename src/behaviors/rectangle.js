@@ -24,10 +24,6 @@ plexi.behavior('Rectangle', function (require, define) {
       return ctx.isPointInPath(x, y);
     },
 
-    select: function (body) {
-      body.fill = 'blue';
-    }
-
   };
 
   return define(Rectangle);

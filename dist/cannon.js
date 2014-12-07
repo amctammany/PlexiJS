@@ -15,17 +15,40 @@ var config = {
   },
   BodyType: {
     'hero': {
-      behaviors: ['Rectangle'],
+      behaviors: ['Rectangle', 'Selectable'],
       width: 25,
       height: 25,
       fill: 'red',
-      stroke: 'blue'
+      stroke: 'blue',
+      selectAction: ['@toggleState', 'selected', 'ready'],
+      states: {
+        'ready': [
+          ['fill', 'red'],
+          ['stroke', 'blue']
+        ],
+        'selected': [
+          ['fill', 'blue'],
+          ['stroke', 'red']
+        ]
+      }
     },
     'enemy': {
-      behaviors: ['Circle'],
+      behaviors: ['Circle', 'Selectable'],
       radius: 15,
       fill: 'green',
-      stroke: 'black'
+      stroke: 'black',
+      selectAction: ['@toggleState', 'selected', 'ready'],
+      states: {
+        'ready': [
+          ['fill', 'green'],
+          ['stroke', 'black']
+        ],
+        'selected': [
+          ['fill', 'black'],
+          ['stroke', 'green']
+        ]
+      }
+
     },
   },
   Stage: {

@@ -352,10 +352,30 @@ plexi.module('BodyType', function (require, define) {
     Object.keys(config).forEach(function (key) {
       body[key] = config[key];
     });
+    if (body.state) {
+      this.changeState(body, body.state);
+    }
 
     return body;
 
   };
+
+  BodyType.prototype.changeState = function (body, state) {
+    var s = this.states[state];
+    if (s) {
+      s.forEach(function (a) {
+        body[a[0]] = a[1];
+      });
+      body.state = state;
+    }
+  };
+  BodyType.prototype.toggleState = function (body, state, def) {
+    if (body.state === state) {
+      state = def;
+    }
+    this.changeState(body, state);
+  };
+
 
   return define(BodyType);
 });
@@ -695,11 +715,29 @@ plexi.behavior('Rectangle', function (require, define) {
       return ctx.isPointInPath(x, y);
     },
 
-    select: function (body) {
-      body.fill = 'blue';
-    }
-
   };
 
   return define(Rectangle);
+});
+
+'use strict';
+
+plexi.behavior('Selectable', function (require, define) {
+  var Selectable = function () {
+    this.addProps(['selectAction']);
+  };
+
+
+  Selectable.prototype.select = function (body) {
+    var action = this.prop(body, 'selectAction');
+    var fn = action[0];
+    if (fn[0] === '@') {
+      this[fn.slice(1)].apply(this, [body].concat(action.slice(1)));
+    } else {
+      plexi.publish(action);
+    }
+    //plexi.publish(this.prop(body, 'selectAction'));
+  };
+
+  return define(Selectable);
 });
