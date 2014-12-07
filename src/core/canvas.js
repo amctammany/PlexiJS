@@ -54,6 +54,11 @@ plexi.module('Canvas', function (require, define) {
       var pos = getMousePosition(e);
       plexi.publish(['Mouse', 'event', 'mouseup', pos.x, pos.y]);
     };
+    this.$canvas.onmousemove = function (e) {
+      var pos = getMousePosition(e);
+      plexi.publish(['Mouse', 'event', 'mousemove', pos.x, pos.y]);
+    };
+
   };
 
   Canvas.prototype.draw = function (world) {

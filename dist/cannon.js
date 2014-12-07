@@ -43,7 +43,7 @@ var config = {
       radius: 15,
       fill: 'green',
       stroke: 'black',
-      selectAction: ['@toggleState', 'selected', 'ready'],
+      selectAction: [['@toggleState', 'selected', 'ready'], ['Mouse', 'change', 'selected'] ],
       states: {
         'ready': [
           ['fill', 'green'],
@@ -97,7 +97,8 @@ var config = {
     },
     'selected': {
       events: {
-        'mousedown': [['Mouse', 'change', 'default'], ['Stage', 'change', 'second']],
+        'mousemove': ['World', 'drag', '@x', '@y'],
+        'mouseup': [['World', 'unselect'], ['Mouse', 'change', 'default']],
       },
     },
   },
