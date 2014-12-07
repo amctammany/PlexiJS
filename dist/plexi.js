@@ -605,10 +605,6 @@ plexi.behavior('Rectangle', function (require, define) {
       ctx.rect(this.prop(body, 'x'), this.prop(body, 'y'), this.prop(body, 'width'), this.prop(body, 'height'));
     },
 
-    fireAt: function (x, y) {
-      console.log(this.id + ' fired at X: ' + x + '; Y ' + y);
-    },
-
     isPointInPath: function (ctx, body, x, y) {
       this.createPath(ctx, body);
       return ctx.isPointInPath(x, y);
