@@ -115,4 +115,67 @@ describe('plexi', function () {
     });
   });
 
+  describe('dispatch', function () {
+    var dispatchReturn, dispatchReturn1;
+    var dispatchFn = function (args) {
+      dispatchReturn = args;
+    };
+    var dispatchFn1 = function (args) {
+      dispatchReturn1 = args;
+    };
+
+
+    beforeEach(function () {
+      plexi.dispatch.reset();
+    });
+
+    it('should subscribe to dispatch', function () {
+      expect(plexi.dispatch.length()).toBe(0);
+      var token = plexi.subscribe('foobar', dispatchFn);
+      expect(!!token).toBe(true);
+      expect(plexi.dispatch.length()).toBe(1);
+    });
+
+    it('should publish event to channel', function () {
+      dispatchReturn = void 0;
+      var args = ['hi', 'you', 'guys'];
+      plexi.subscribe('foobar', dispatchFn);
+      plexi.publish(['foobar'].concat(args));
+      expect(dispatchReturn[0]).toBe(args[0]);
+      expect(dispatchReturn[1]).toBe(args[1]);
+      expect(dispatchReturn[2]).toBe(args[2]);
+
+    });
+    it('should unsubscribe to dispatch', function () {
+      expect(plexi.dispatch.length()).toBe(0);
+      var token = plexi.subscribe('foobar', dispatchFn);
+      expect(!!token).toBe(true);
+      expect(plexi.dispatch.length()).toBe(1);
+      plexi.unsubscribe(token);
+      expect(plexi.dispatch.length()).toBe(0);
+    });
+
+    it('should publish multiple events', function () {
+      dispatchReturn = void 0;
+      dispatchReturn1 = void 0;
+      plexi.subscribe('f1', dispatchFn);
+      plexi.subscribe('f2', dispatchFn1);
+      var a1 = ['foo', 'bar'];
+      var a2 = ['boo', 'baz'];
+
+      plexi.publish([
+        ['f1'].concat(a1),
+        ['f2'].concat(a2),
+      ]);
+      expect(dispatchReturn[0]).toBe(a1[0]);
+      expect(dispatchReturn[1]).toBe(a1[1]);
+      expect(dispatchReturn1[0]).toBe(a2[0]);
+      expect(dispatchReturn1[1]).toBe(a2[1]);
+    });
+
+
+
+
+  });
+
 });

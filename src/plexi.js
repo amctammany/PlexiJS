@@ -5,6 +5,7 @@ var plexi = (function () {
   var _constants = {};
   var _modules = {};
   var _behaviors = {};
+  var _dispatch = {};
 
 
   var requireModule = function (id) {
@@ -166,6 +167,78 @@ var plexi = (function () {
       }
       //return plexi.module('Behavior').create(id, mixin(defineMixin));
     },
+    dispatch: (function (obj) {
+      var channels = {};
+      var uid = -1;
+
+      obj.publish = function (args) {
+        args = args.slice();
+        var channel = args.shift();
+        if (!channels[channel]) {
+          return false;
+        }
+        var subscribers = channels[channel],
+            l = subscribers ? subscribers.length : 0;
+        while(l--) {
+          subscribers[l].func(args);
+        }
+      };
+
+      obj.subscribe = function (channel, func) {
+        if (!channels[channel]) {
+          channels[channel] = [];
+        }
+        var token = (++uid).toString();
+        channels[channel].push({
+          token: token,
+          func: func,
+        });
+        return token;
+      };
+
+      obj.unsubscribe = function (token) {
+        for (var c in channels) {
+          if (channels[c]) {
+            for (var i = 0, j = channels[c].length; i < j; i++){
+              if (channels[c][i].token === token) {
+                channels[c].splice(i, 1);
+                //return token;
+              }
+            }
+            if (channels[c].length === 0) {
+              delete channels[c];
+            }
+          }
+        }
+        //return this;
+      };
+
+      obj.reset = function () {
+        channels = {};
+        uid = -1;
+      };
+
+      obj.length = function () {
+        return Object.keys(channels).length;
+      };
+      return obj;
+    })(_dispatch),
+    publish: function (args) {
+      if (args[0] instanceof Array) {
+        args.forEach(function (a) {
+          plexi.dispatch.publish(a);
+        });
+      } else {
+        return plexi.dispatch.publish(args);
+      }
+    },
+    subscribe: function (channel, func) {
+      return plexi.dispatch.subscribe(channel, func);
+    },
+    unsubscribe: function (token) {
+      return plexi.dispatch.unsubscribe(token);
+    },
+
     load: function (config) {
       if (_config !== config) {
         plexi.reset();
@@ -198,6 +271,7 @@ var plexi = (function () {
     },
 
     reset: function () {
+      plexi.dispatch.reset();
       plexi.modules().forEach(function (m) {
         m.reset();
       });
