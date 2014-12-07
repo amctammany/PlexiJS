@@ -46,6 +46,18 @@ var config = {
       ],
     },
   },
+  Mouse: {
+    'default': {
+      events: {
+        'mousedown': ['World', 'select', '@x', '@y'],
+      }
+    },
+    'selected': {
+      events: {
+        'mousedown': ['Mouse', 'change', 'default'],
+      },
+    },
+  },
 
   Game: {
     'main': {
@@ -53,6 +65,7 @@ var config = {
         World: 'main',
         Canvas: 'main',
         Stage: 'intro',
+        Mouse: 'default',
       },
     },
   },

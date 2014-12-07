@@ -31,10 +31,31 @@ plexi.module('Canvas', function (require, define) {
     BodyType.children().forEach(function (t) {
       _private.drawMethods[t.id] = t.draw.bind(t);
     });
+    this.addEventListeners();
     this.dirty = false;
     return this;
 
   };
+
+  function getMousePosition(e) {
+    return {
+      x: e.offsetX,
+      y: e.offsetY,
+    };
+  }
+  Canvas.prototype.addEventListeners = function () {
+
+    this.$canvas.onmousedown = function (e) {
+      this.focus();
+      var pos = getMousePosition(e);
+      plexi.publish(['Mouse', 'event', 'mousedown', pos.x, pos.y]);
+    };
+    this.$canvas.onmouseup = function (e) {
+      var pos = getMousePosition(e);
+      plexi.publish(['Mouse', 'event', 'mouseup', pos.x, pos.y]);
+    };
+  };
+
   Canvas.prototype.draw = function (world) {
     var ctx = this.ctx;
     ctx.clearRect(0, 0, this.constants.width, this.constants.height);

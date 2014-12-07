@@ -122,7 +122,12 @@ var plexi = (function () {
         return module._current;
       },
       dispatch: function (args) {
-
+        var n = args.shift();
+        if (constructor.dispatch.hasOwnProperty(n)) {
+          constructor.dispatch[n].apply(module._current, args);
+        } else {
+          // plexi logging
+        }
       },
     };
     return module;
@@ -134,8 +139,10 @@ var plexi = (function () {
       if (id) {
         //console.log(cb);
         if (cb && cb instanceof Function) {
-          _modules[id] = cb(requireModule, defineModule);
-          _modules[id].id = id;
+          var module = cb(requireModule, defineModule);
+          module.id = id;
+          module.token = _dispatch.subscribe(id, module.dispatch);
+          _modules[id] = module;
           return _modules[id];
         } else {
           return _modules[id];
@@ -202,11 +209,12 @@ var plexi = (function () {
             for (var i = 0, j = channels[c].length; i < j; i++){
               if (channels[c][i].token === token) {
                 channels[c].splice(i, 1);
-                //return token;
-              }
-            }
             if (channels[c].length === 0) {
               delete channels[c];
+            }
+
+                return token;
+              }
             }
           }
         }
@@ -223,6 +231,7 @@ var plexi = (function () {
       };
       return obj;
     })(_dispatch),
+
     publish: function (args) {
       if (args[0] instanceof Array) {
         args.forEach(function (a) {
@@ -271,14 +280,13 @@ var plexi = (function () {
     },
 
     reset: function () {
-      plexi.dispatch.reset();
       plexi.modules().forEach(function (m) {
         m.reset();
       });
     },
     bootstrap: function (id) {
       var game = plexi.module('Game').change(id);
-      ['Canvas', 'World', 'Stage'].forEach(function (s) {
+      ['Canvas', 'World', 'Stage', 'Mouse'].forEach(function (s) {
         var module = plexi.module(s);
         module.change(game.defaults[s]).reset();
       });
