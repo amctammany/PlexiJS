@@ -56,7 +56,7 @@ describe('plexi::BodyType', function () {
     });
 
     expect(!!body).toBe(true);
-    expect(body.bodytype).toBe('type');
+    expect(body.type).toBe('type');
     expect(body.x).toBe(10);
     expect(body.y).toBe(20);
 

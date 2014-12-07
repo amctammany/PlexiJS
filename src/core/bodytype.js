@@ -24,7 +24,7 @@ plexi.module('BodyType', function (require, define) {
 
   BodyType.prototype.createBody = function (config) {
 
-    var body = {bodytype: this.id};
+    var body = {type: this.id};
     Object.keys(config).forEach(function (key) {
       body[key] = config[key];
     });
