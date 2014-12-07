@@ -4,6 +4,7 @@ describe('plexi::Behavior', function () {
   var Behavior;
 
   beforeEach(function() {
+    plexi.reset();
     Behavior = plexi.module('Behavior');
   });
 

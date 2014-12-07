@@ -9,6 +9,7 @@ describe('plexi::Canvas', function () {
   };
 
   beforeEach(function () {
+    plexi.reset();
     Canvas = plexi.module('Canvas');
   });
 
