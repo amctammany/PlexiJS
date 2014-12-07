@@ -113,7 +113,12 @@ var plexi = (function () {
         return Object.keys(module._children).length;
       },
       change: function (id) {
-
+        if (!module._children.hasOwnProperty(id)) { return; }
+        module._current = module._children[id];
+        return module._current;
+      },
+      current: function () {
+        return module._current;
       },
       dispatch: function (args) {
 
@@ -132,7 +137,6 @@ var plexi = (function () {
           _modules[id].id = id;
           return _modules[id];
         } else {
-
           return _modules[id];
         }
       } else {
@@ -164,7 +168,7 @@ var plexi = (function () {
     },
     load: function (config) {
       if (_config !== config) {
-        plexi.reset();
+        //plexi.reset();
         _config = config;
         _constants = {};
       }
@@ -197,6 +201,17 @@ var plexi = (function () {
       plexi.modules().forEach(function (m) {
         m.reset();
       });
+    },
+    bootstrap: function (id) {
+      var game = plexi.module('Game').change(id);
+      ['Canvas', 'World', 'Stage'].forEach(function (s) {
+        var module = plexi.module(s);
+        module.change(game.defaults[s]).reset();
+      });
+
+      game.refresh();
+      //console.log(game);
+
     },
 
 

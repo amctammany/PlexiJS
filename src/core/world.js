@@ -26,7 +26,7 @@ plexi.module('World', function (require, define) {
 
   World.prototype.load = function (obj) {
     obj.bodies.forEach(function (b) {
-      this.addBody(b.type, b);
+      this.addBody(b.type, b.config);
     }.bind(this));
   };
 

@@ -113,7 +113,12 @@ var plexi = (function () {
         return Object.keys(module._children).length;
       },
       change: function (id) {
-
+        if (!module._children.hasOwnProperty(id)) { return; }
+        module._current = module._children[id];
+        return module._current;
+      },
+      current: function () {
+        return module._current;
       },
       dispatch: function (args) {
 
@@ -132,7 +137,6 @@ var plexi = (function () {
           _modules[id].id = id;
           return _modules[id];
         } else {
-
           return _modules[id];
         }
       } else {
@@ -164,7 +168,7 @@ var plexi = (function () {
     },
     load: function (config) {
       if (_config !== config) {
-        plexi.reset();
+        //plexi.reset();
         _config = config;
         _constants = {};
       }
@@ -197,6 +201,17 @@ var plexi = (function () {
       plexi.modules().forEach(function (m) {
         m.reset();
       });
+    },
+    bootstrap: function (id) {
+      var game = plexi.module('Game').change(id);
+      ['Canvas', 'World', 'Stage'].forEach(function (s) {
+        var module = plexi.module(s);
+        module.change(game.defaults[s]).reset();
+      });
+
+      game.refresh();
+      //console.log(game);
+
     },
 
 
@@ -285,14 +300,14 @@ plexi.module('Canvas', function (require, define) {
 
 
   Canvas.prototype.init = function () {
-    if (!this.valid) {return false;}
+    if (!this.valid) {console.log('bad canvas'); return false;}
     this.$canvas = document.getElementById(this.constants.element);
-    this.$canvas = this.$canvas || document.createElement('canvas');
+    //this.$canvas = this.$canvas || document.createElement('canvas');
     this.$canvas.width = this.constants.width;
     this.$canvas.height = this.constants.height;
     this.ctx = this.$canvas.getContext('2d');
-    //this.width = this.$canvas.width;
-    //this.height = this.$canvas.height;
+    this.width = this.$canvas.width;
+    this.height = this.$canvas.height;
     BodyType.children().forEach(function (t) {
       _private.drawMethods[t.id] = t.draw.bind(t);
     });
@@ -308,8 +323,70 @@ plexi.module('Canvas', function (require, define) {
     });
   };
 
+  Canvas.prototype.reset = function () {
+    this.init();
+  };
+
 
   return define(Canvas);
+
+});
+
+'use strict';
+
+plexi.module('Game', function (require, define) {
+  var _private = {
+    defaults: function (config) {
+      this.defaults = config;
+      return this;
+    },
+
+  };
+  var _world, _stage, _canvas;
+
+  var Game = function (id, config) {
+    this.id = id;
+    plexi.applyConfig(this, config, _private);
+  };
+  var _animLoop, _animFn;
+  Game.prototype.start = function () {
+    _private.paused = false;
+    _animFn = this.animate.bind(this);
+    _animFn();
+  };
+  Game.prototype.animate = function () {
+    this.advance(0.03);
+    _animLoop = window.requestAnimationFrame(_animFn);
+  };
+  Game.prototype.advance = function (delta) {
+    _canvas.draw(_world);
+    //this.current.Canvas.draw(this.current.World);
+  };
+  Game.prototype.refresh = function () {
+    if (_animLoop) {
+      window.cancelAnimationFrame(_animLoop);
+    }
+
+    var World = require('World');
+    var Canvas = require('Canvas');
+    var Stage = require('Stage');
+
+    _world = World.current();
+    _canvas = Canvas.current();
+    _stage = Stage.current();
+    console.log(_world);
+    _world.load(_stage);
+    this.start();
+  };
+
+  Game.prototype.reset = function () {
+    Object.keys(this.defaults).forEach(function (d) {
+      //plexi.publish([d, 'reset']);
+    });
+    console.log('reset game: ' + this);
+  };
+
+  return define(Game);
 
 });
 
@@ -345,6 +422,11 @@ plexi.module('Stage', function (require, define) {
 
   };
 
+  Stage.prototype.reset = function () {
+    this.init();
+
+  };
+
   return define(Stage);
 });
 
@@ -376,7 +458,7 @@ plexi.module('World', function (require, define) {
 
   World.prototype.load = function (obj) {
     obj.bodies.forEach(function (b) {
-      this.addBody(b.type, b);
+      this.addBody(b.type, b.config);
     }.bind(this));
   };
 

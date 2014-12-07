@@ -20,14 +20,14 @@ plexi.module('Canvas', function (require, define) {
 
 
   Canvas.prototype.init = function () {
-    if (!this.valid) {return false;}
+    if (!this.valid) {console.log('bad canvas'); return false;}
     this.$canvas = document.getElementById(this.constants.element);
-    this.$canvas = this.$canvas || document.createElement('canvas');
+    //this.$canvas = this.$canvas || document.createElement('canvas');
     this.$canvas.width = this.constants.width;
     this.$canvas.height = this.constants.height;
     this.ctx = this.$canvas.getContext('2d');
-    //this.width = this.$canvas.width;
-    //this.height = this.$canvas.height;
+    this.width = this.$canvas.width;
+    this.height = this.$canvas.height;
     BodyType.children().forEach(function (t) {
       _private.drawMethods[t.id] = t.draw.bind(t);
     });
@@ -41,6 +41,10 @@ plexi.module('Canvas', function (require, define) {
     world.bodies.forEach(function (body) {
       _private.drawMethods[body.type](ctx, body);
     });
+  };
+
+  Canvas.prototype.reset = function () {
+    this.init();
   };
 
 

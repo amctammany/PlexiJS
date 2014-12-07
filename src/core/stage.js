@@ -30,5 +30,10 @@ plexi.module('Stage', function (require, define) {
 
   };
 
+  Stage.prototype.reset = function () {
+    this.init();
+
+  };
+
   return define(Stage);
 });
