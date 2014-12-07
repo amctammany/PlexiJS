@@ -46,7 +46,7 @@ plexi.module('Canvas', function (require, define) {
   Canvas.prototype.addEventListeners = function () {
 
     this.$canvas.onmousedown = function (e) {
-      this.focus();
+      //this.focus();
       var pos = getMousePosition(e);
       plexi.publish(['Mouse', 'event', 'mousedown', pos.x, pos.y]);
     };

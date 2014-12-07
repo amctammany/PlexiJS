@@ -60,7 +60,8 @@ var config = {
   Stage: {
     'intro': {
       bodies: [
-        {type: 'button', x: 5, y: 5, width: 100, height: 25, text: 'Level', action: ['Stage', 'change', 'level']},
+        {type: 'button', x: 5, y: 5, width: 100, height: 25, text: 'Level One', action: [['Stage', 'change', 'level'], ['Level', 'change', 'one']]},
+        {type: 'button', x: 5, y: 45, width: 100, height: 25, text: 'Level Two', action: [['Stage', 'change', 'level'], ['Level', 'change', 'two']]},
       ],
     },
     'level': {

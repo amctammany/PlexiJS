@@ -6,6 +6,7 @@ plexi.module('Stage', function (require, define) {
   };
 
   var Level = require('Level');
+  var World = require('World');
 
   var Stage = function (id, config) {
     this.id = id;
@@ -26,7 +27,10 @@ plexi.module('Stage', function (require, define) {
     return this;
   };
 
-  Stage.prototype.loadLevel = function (level) {
+  Stage.prototype.loadLevel = function (id) {
+    var level = Level.get(id);
+    level.init();
+    require('World').current().load(level);
 
   };
 
@@ -40,6 +44,10 @@ plexi.module('Stage', function (require, define) {
       this.reset();
       plexi.publish([['World', 'reset'], ['Game', 'refresh']]);
     },
+    loadLevel: function (id) {
+      this.reset();
+      this.loadLevel(id);
+    }
 
   };
 

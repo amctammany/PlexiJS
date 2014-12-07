@@ -14,6 +14,12 @@ var config = {
     }
   },
   BodyType: {
+    'button': {
+      behaviors: ['Button'],
+      fill: 'green',
+      textColor: 'red',
+      padding: 5,
+    },
     'hero': {
       behaviors: ['Rectangle', 'Selectable'],
       width: 25,
@@ -54,17 +60,15 @@ var config = {
   Stage: {
     'intro': {
       bodies: [
-        {type: 'hero', x: 50, y: 50},
-        {type: 'enemy', x: 150, y: 150},
-        {type: 'hero', x: 250, y: 250},
+        {type: 'button', x: 5, y: 5, width: 100, height: 25, text: 'Level One', action: [['Stage', 'change', 'level'], ['Level', 'change', 'one']]},
+        {type: 'button', x: 5, y: 45, width: 100, height: 25, text: 'Level Two', action: [['Stage', 'change', 'level'], ['Level', 'change', 'two']]},
       ],
     },
-    'second': {
+    'level': {
       bodies: [
-        {type: 'hero', x: 150, y: 50},
-        {type: 'enemy', x: 50, y: 150},
-        {type: 'hero', x: 20, y: 350},
-      ],
+        {type: 'button', x: 5, y: 5, width: 100, height: 25, text: 'Back', action: ['Stage', 'change', 'intro']},
+
+      ]
     },
 
   },
@@ -76,6 +80,14 @@ var config = {
         {type: 'hero', x: 250, y: 100},
       ],
     },
+    'two': {
+      bodies: [
+        {type: 'hero', x: 150, y: 50},
+        {type: 'enemy', x: 50, y: 150},
+        {type: 'hero', x: 20, y: 350},
+      ],
+    },
+
   },
   Mouse: {
     'default': {
