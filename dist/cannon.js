@@ -20,7 +20,7 @@ var config = {
       height: 25,
       fill: 'red',
       stroke: 'blue',
-      selectAction: ['@toggleState', 'selected', 'ready'],
+      selectAction: [['@toggleState', 'selected', 'ready'], ['Mouse', 'change', 'selected']],
       states: {
         'ready': [
           ['fill', 'red'],

@@ -5,14 +5,25 @@ plexi.behavior('Selectable', function (require, define) {
     this.addProps(['selectAction']);
   };
 
+  function applyAction(self, action, body) {
+    var fn = action[0];
+    if (fn[0] === '@') {
+      self[fn.slice(1)].apply(self, [body].concat(action.slice(1)));
+    } else {
+      plexi.publish(action);
+    }
+
+  }
 
   Selectable.prototype.select = function (body) {
     var action = this.prop(body, 'selectAction');
     var fn = action[0];
-    if (fn[0] === '@') {
-      this[fn.slice(1)].apply(this, [body].concat(action.slice(1)));
+    if (fn instanceof Array) {
+      action.forEach(function (a) {
+        applyAction(this, a, body);
+      }.bind(this));
     } else {
-      plexi.publish(action);
+      applyAction(this, action, body);
     }
     //plexi.publish(this.prop(body, 'selectAction'));
   };

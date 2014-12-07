@@ -123,6 +123,9 @@ var plexi = (function () {
       },
       dispatch: function (args) {
         var n = args.shift();
+        if (n === 'change') {
+          module.change(args[0]);
+        }
         if (constructor.dispatch.hasOwnProperty(n)) {
           constructor.dispatch[n].apply(module._current, args);
         } else {
