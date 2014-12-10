@@ -10,6 +10,7 @@ var config = {
   },
   World: {
     'main': {
+      behaviors: ['WorldDraggable'],
 
     }
   },

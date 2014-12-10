@@ -36,39 +36,39 @@ plexi.module('World', function (require, define) {
     this.dragStart = {x: 0, y: 0}
   };
 
-  World.prototype.select = function (x, y) {
-    this.dragStart.x = x;
-    this.dragStart.y = y;
-    var ctx = Canvas.current().ctx;
-    var bodies = this.bodies.filter(function (b) {
-      return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
-    });
-    this.selection = bodies;
-    var type;
-    bodies.forEach(function (b) {
-      type = BodyType.get(b.type);
-      if (!type.select) { return; }
-      type.select(b);
-    });
-  };
-  World.prototype.unselect = function () {
-    var type;
-    this.selection.forEach(function (b) {
-      type = BodyType.get(b.type);
-      if (!type.select) { return; }
-      type.select(b);
-    });
-  };
-  World.prototype.dragSelection = function (x, y) {
-    var dx = this.dragStart.x - x;
-    var dy = this.dragStart.y - y;
-    this.dragStart = {x: x, y: y};
-    var type;
-    this.selection.forEach(function (b) {
-      b.x -= dx;
-      b.y -= dy;
-    });
-  };
+  //World.prototype.select = function (x, y) {
+    //this.dragStart.x = x;
+    //this.dragStart.y = y;
+    //var ctx = Canvas.current().ctx;
+    //var bodies = this.bodies.filter(function (b) {
+      //return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
+    //});
+    //this.selection = bodies;
+    //var type;
+    //bodies.forEach(function (b) {
+      //type = BodyType.get(b.type);
+      //if (!type.select) { return; }
+      //type.select(b);
+    //});
+  //};
+  //World.prototype.unselect = function () {
+    //var type;
+    //this.selection.forEach(function (b) {
+      //type = BodyType.get(b.type);
+      //if (!type.select) { return; }
+      //type.select(b);
+    //});
+  //};
+  //World.prototype.dragSelection = function (x, y) {
+    //var dx = this.dragStart.x - x;
+    //var dy = this.dragStart.y - y;
+    //this.dragStart = {x: x, y: y};
+    //var type;
+    //this.selection.forEach(function (b) {
+      //b.x -= dx;
+      //b.y -= dy;
+    //});
+  //};
 
   World.dispatch = {
     select: function (x, y) {
@@ -78,6 +78,7 @@ plexi.module('World', function (require, define) {
       this.unselect();
     },
     drag: function (x, y) {
+      console.log(Array.prototype.slice.call(arguments));
       this.dragSelection(x, y);
     },
 
