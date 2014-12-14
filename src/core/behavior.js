@@ -14,7 +14,6 @@ plexi.module('Behavior', function (require, define) {
 
     if (this.constructor.hasOwnProperty('dispatch')) {
       Object.keys(this.constructor.dispatch).forEach(function (k) {
-        console.log(this.constructor.dispatch[k]);
         klass.prototype.dispatch[k] = this.constructor.dispatch[k];
       }.bind(this));
     }

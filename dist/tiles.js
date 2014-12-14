@@ -21,6 +21,23 @@ var config = {
       textColor: 'black',
       padding: 8,
     },
+    'tile': {
+      behaviors: ['Rectangle', 'Selectable'],
+      stroke: 'black',
+      width: 20,
+      height: 20
+    },
+    'tile-group': {
+      behaviors: ['Group'],
+      template: 'tile',
+      x: 50,
+      y: 50,
+      columns: 2,
+      rows: 2,
+      width: 500,
+      height: 500,
+      padding: 3,
+    },
 
   },
 
@@ -34,6 +51,13 @@ var config = {
     'level': {
       bodies: [
         {type: 'button', x: 5, y: 5, width: 100, height: 25, text: 'Back', action: ['Stage', 'change', 'intro']},
+        {type: 'tile-group', group: [
+          {fill: 'red'},
+          {fill: 'blue'},
+          {fill: 'green'},
+          {fill: 'yellow'},
+
+        ]}
       ],
     },
     'scores': {

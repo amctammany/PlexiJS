@@ -18,8 +18,19 @@ plexi.module('World', function (require, define) {
   };
 
   World.prototype.addBody = function (type, config) {
-    var body = BodyType.get(type).createBody(config);
+    var bodytype = BodyType.get(type);
+    var body = bodytype.createBody(config);
     this.bodies.push(body);
+    if (bodytype.init) {
+      bodytype.init(body);
+      if (body.members) {
+        body.members.forEach(function (m) {
+          //console.log(m);
+          this.bodies.push(m);
+        }.bind(this));
+      }
+    }
+
     return body;
   };
 
