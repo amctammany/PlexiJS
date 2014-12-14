@@ -1,15 +1,22 @@
 'use strict';
 
 plexi.module('Level', function (require, define) {
+  var _private = {
+
+  };
+
+
   var Level = function (id, config) {
     this.id = id;
     this.config = config;
     this.bodies = [];
     this.dirty = true;
+    plexi.applyConfig(this, config, _private);
   };
 
   Level.prototype.init = function () {
     if (!this.dirty) {return false;}
+    console.log('regular init');
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
     });
@@ -25,6 +32,9 @@ plexi.module('Level', function (require, define) {
     change: function (id) {
       this.reset();
       plexi.publish(['Stage', 'loadLevel', id]);
+    },
+    flush: function (index) {
+      console.log(index);
     },
   };
 

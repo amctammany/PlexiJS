@@ -309,6 +309,13 @@ var plexi = (function () {
 
     },
 
+    random: function (opts) {
+      var l = opts.length;
+      return function () {
+        return opts[Math.floor((Math.random() * l))];
+      };
+    },
+
 
   };
 })();

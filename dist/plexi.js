@@ -309,6 +309,13 @@ var plexi = (function () {
 
     },
 
+    random: function (opts) {
+      var l = opts.length;
+      return function () {
+        return opts[Math.floor((Math.random() * l))];
+      };
+    },
+
 
   };
 })();
@@ -544,15 +551,22 @@ plexi.module('Game', function (require, define) {
 'use strict';
 
 plexi.module('Level', function (require, define) {
+  var _private = {
+
+  };
+
+
   var Level = function (id, config) {
     this.id = id;
     this.config = config;
     this.bodies = [];
     this.dirty = true;
+    plexi.applyConfig(this, config, _private);
   };
 
   Level.prototype.init = function () {
     if (!this.dirty) {return false;}
+    console.log('regular init');
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
     });
@@ -568,6 +582,9 @@ plexi.module('Level', function (require, define) {
     change: function (id) {
       this.reset();
       plexi.publish(['Stage', 'loadLevel', id]);
+    },
+    flush: function (index) {
+      console.log(index);
     },
   };
 
@@ -691,6 +708,10 @@ plexi.module('World', function (require, define) {
 
   World.prototype.addBody = function (type, config) {
     var bodytype = BodyType.get(type);
+    if (!config) {
+      console.log('Invalid Configuration for BodyType: ' + type);
+      return;
+    }
     var body = bodytype.createBody(config);
     this.bodies.push(body);
     if (bodytype.init) {
@@ -716,7 +737,7 @@ plexi.module('World', function (require, define) {
     this.bodies = [];
     this.forces = [];
     this.selection = [];
-    this.dragStart = {x: 0, y: 0}
+    this.dragStart = {x: 0, y: 0};
   };
 
   //World.prototype.select = function (x, y) {
@@ -933,6 +954,44 @@ plexi.behavior('Group', function (require, define) {
 
 'use strict';
 
+plexi.behavior('LevelTiled', function (require, define) {
+
+  var Tiled = function () {
+    this.addProps(['rows', 'columns', 'template']);
+    this.length = this.prop(this, 'rows') * this.prop(this, 'columns');
+    this.cells = Array.apply(0, new Array(this.length)).map(function () {return {};});
+  };
+  function getPosition(index, rows, columns) {
+    var col = index % columns;
+    var row = Math.floor(index / columns);
+    return {row: row, col: col};
+  }
+
+  Tiled.prototype = {
+    init: function () {
+      if (!this.dirty) { return false; }
+      var prop = function (key) {return this.prop(this, key);}.bind(this);
+      var type = require('BodyType').get(prop('template').id);
+      var tileWidth = prop('width') / prop('columns');
+      var tileHeight = prop('height') / prop('rows');
+
+      var pos;
+      var rows = prop('rows'), columns = prop('columns');
+      var x = prop('x'), y = prop('y');
+      this.bodies = this.cells.map(function (cell, index) {
+        pos = getPosition(index, rows, columns);
+        return {type: type.id,  config: {x: x + (pos.col * tileWidth), y: y + (pos.row * tileHeight), fill: prop('template').fill(), index: index, width: tileWidth, height: tileHeight }};
+      }.bind(this));
+
+    },
+  };
+
+  return define(Tiled);
+
+});
+
+'use strict';
+
 plexi.behavior('Rectangle', function (require, define) {
   var Rectangle = function () {
     this.addProps(['x', 'y', 'width', 'height']);
@@ -1033,10 +1092,13 @@ plexi.behavior('Selectable', function (require, define) {
 
   function applyAction(self, action, body) {
     var fn = action[0];
+    console.log(self)
     if (fn[0] === '@') {
       self[fn.slice(1)].apply(self, [body].concat(action.slice(1)));
     } else {
-      plexi.publish(action);
+      plexi.publish(action.map(function (a) {
+        return a[0] === '@' ? body[a.slice(1)] : a;
+      }));
     }
 
   }

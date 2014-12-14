@@ -19,6 +19,10 @@ plexi.module('World', function (require, define) {
 
   World.prototype.addBody = function (type, config) {
     var bodytype = BodyType.get(type);
+    if (!config) {
+      console.log('Invalid Configuration for BodyType: ' + type);
+      return;
+    }
     var body = bodytype.createBody(config);
     this.bodies.push(body);
     if (bodytype.init) {
@@ -44,7 +48,7 @@ plexi.module('World', function (require, define) {
     this.bodies = [];
     this.forces = [];
     this.selection = [];
-    this.dragStart = {x: 0, y: 0}
+    this.dragStart = {x: 0, y: 0};
   };
 
   //World.prototype.select = function (x, y) {
