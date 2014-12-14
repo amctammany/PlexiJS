@@ -42,5 +42,12 @@ plexi.behavior('WorldDraggable', function (require, define) {
     });
   };
 
+  Draggable.dispatch = {
+    drag: function (x, y) {
+      console.log(Array.prototype.slice.call(arguments));
+      this.dragSelection(x, y);
+    },
+  };
+
   return define(Draggable);
 });

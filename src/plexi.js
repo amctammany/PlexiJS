@@ -22,6 +22,7 @@ var plexi = (function () {
     //klass.constants = i.constants || [];
     klass.prototype.addProps = addProps;
     klass.prototype.prop = getProp;
+    //klass.dispatch = klass.dispatch || {};
   }
   function addProps(arr) {
     arr.forEach(function (p) {
@@ -95,6 +96,7 @@ var plexi = (function () {
         };
         Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
+        Klass.prototype.dispatch = Object.create(constructor.dispatch || {});
         decorateKlass(Klass);
         applyKlassBehaviors(Klass, config.behaviors);
         var i = new Klass();
@@ -126,11 +128,19 @@ var plexi = (function () {
         if (n === 'change') {
           module.change(args[0]);
         }
-        if (constructor.dispatch.hasOwnProperty(n)) {
-          constructor.dispatch[n].apply(module._current, args);
+        //console.log(module._current.dispatch[n]);
+        if (module._current.dispatch[n]) {
+          //console.log(n);
+          module._current.dispatch[n].apply(module._current, args);
         } else {
           // plexi logging
         }
+        //if (constructor.dispatch.hasOwnProperty(n)) {
+          //console.log(n);
+          //constructor.dispatch[n].apply(module._current, args);
+        //} else {
+          //// plexi logging
+        //}
       },
     };
     return module;

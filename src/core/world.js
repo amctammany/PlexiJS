@@ -77,10 +77,10 @@ plexi.module('World', function (require, define) {
     unselect: function () {
       this.unselect();
     },
-    drag: function (x, y) {
-      console.log(Array.prototype.slice.call(arguments));
-      this.dragSelection(x, y);
-    },
+    //drag: function (x, y) {
+      //console.log(Array.prototype.slice.call(arguments));
+      //this.dragSelection(x, y);
+    //},
 
     reset: function () {
       this.reset();

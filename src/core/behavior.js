@@ -11,6 +11,13 @@ plexi.module('Behavior', function (require, define) {
     Object.keys(this.constructor.prototype).forEach(function (k) {
       klass.prototype[k] = this.constructor.prototype[k];
     }.bind(this));
+
+    if (this.constructor.hasOwnProperty('dispatch')) {
+      Object.keys(this.constructor.dispatch).forEach(function (k) {
+        console.log(this.constructor.dispatch[k]);
+        klass.prototype.dispatch[k] = this.constructor.dispatch[k];
+      }.bind(this));
+    }
   };
   Behavior.prototype.applyToInstance = function (instance) {
     this.constructor.call(instance);

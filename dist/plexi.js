@@ -22,6 +22,7 @@ var plexi = (function () {
     //klass.constants = i.constants || [];
     klass.prototype.addProps = addProps;
     klass.prototype.prop = getProp;
+    //klass.dispatch = klass.dispatch || {};
   }
   function addProps(arr) {
     arr.forEach(function (p) {
@@ -95,6 +96,7 @@ var plexi = (function () {
         };
         Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
+        Klass.prototype.dispatch = Object.create(constructor.dispatch || {});
         decorateKlass(Klass);
         applyKlassBehaviors(Klass, config.behaviors);
         var i = new Klass();
@@ -126,11 +128,19 @@ var plexi = (function () {
         if (n === 'change') {
           module.change(args[0]);
         }
-        if (constructor.dispatch.hasOwnProperty(n)) {
-          constructor.dispatch[n].apply(module._current, args);
+        //console.log(module._current.dispatch[n]);
+        if (module._current.dispatch[n]) {
+          //console.log(n);
+          module._current.dispatch[n].apply(module._current, args);
         } else {
           // plexi logging
         }
+        //if (constructor.dispatch.hasOwnProperty(n)) {
+          //console.log(n);
+          //constructor.dispatch[n].apply(module._current, args);
+        //} else {
+          //// plexi logging
+        //}
       },
     };
     return module;
@@ -316,6 +326,13 @@ plexi.module('Behavior', function (require, define) {
     Object.keys(this.constructor.prototype).forEach(function (k) {
       klass.prototype[k] = this.constructor.prototype[k];
     }.bind(this));
+
+    if (this.constructor.hasOwnProperty('dispatch')) {
+      Object.keys(this.constructor.dispatch).forEach(function (k) {
+        console.log(this.constructor.dispatch[k]);
+        klass.prototype.dispatch[k] = this.constructor.dispatch[k];
+      }.bind(this));
+    }
   };
   Behavior.prototype.applyToInstance = function (instance) {
     this.constructor.call(instance);
@@ -692,39 +709,39 @@ plexi.module('World', function (require, define) {
     this.dragStart = {x: 0, y: 0}
   };
 
-  World.prototype.select = function (x, y) {
-    this.dragStart.x = x;
-    this.dragStart.y = y;
-    var ctx = Canvas.current().ctx;
-    var bodies = this.bodies.filter(function (b) {
-      return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
-    });
-    this.selection = bodies;
-    var type;
-    bodies.forEach(function (b) {
-      type = BodyType.get(b.type);
-      if (!type.select) { return; }
-      type.select(b);
-    });
-  };
-  World.prototype.unselect = function () {
-    var type;
-    this.selection.forEach(function (b) {
-      type = BodyType.get(b.type);
-      if (!type.select) { return; }
-      type.select(b);
-    });
-  };
-  World.prototype.dragSelection = function (x, y) {
-    var dx = this.dragStart.x - x;
-    var dy = this.dragStart.y - y;
-    this.dragStart = {x: x, y: y};
-    var type;
-    this.selection.forEach(function (b) {
-      b.x -= dx;
-      b.y -= dy;
-    });
-  };
+  //World.prototype.select = function (x, y) {
+    //this.dragStart.x = x;
+    //this.dragStart.y = y;
+    //var ctx = Canvas.current().ctx;
+    //var bodies = this.bodies.filter(function (b) {
+      //return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
+    //});
+    //this.selection = bodies;
+    //var type;
+    //bodies.forEach(function (b) {
+      //type = BodyType.get(b.type);
+      //if (!type.select) { return; }
+      //type.select(b);
+    //});
+  //};
+  //World.prototype.unselect = function () {
+    //var type;
+    //this.selection.forEach(function (b) {
+      //type = BodyType.get(b.type);
+      //if (!type.select) { return; }
+      //type.select(b);
+    //});
+  //};
+  //World.prototype.dragSelection = function (x, y) {
+    //var dx = this.dragStart.x - x;
+    //var dy = this.dragStart.y - y;
+    //this.dragStart = {x: x, y: y};
+    //var type;
+    //this.selection.forEach(function (b) {
+      //b.x -= dx;
+      //b.y -= dy;
+    //});
+  //};
 
   World.dispatch = {
     select: function (x, y) {
@@ -733,9 +750,10 @@ plexi.module('World', function (require, define) {
     unselect: function () {
       this.unselect();
     },
-    drag: function (x, y) {
-      this.dragSelection(x, y);
-    },
+    //drag: function (x, y) {
+      //console.log(Array.prototype.slice.call(arguments));
+      //this.dragSelection(x, y);
+    //},
 
     reset: function () {
       this.reset();
@@ -906,4 +924,58 @@ plexi.behavior('Selectable', function (require, define) {
   };
 
   return define(Selectable);
+});
+
+'use strict'
+
+plexi.behavior('WorldDraggable', function (require, define) {
+  var Draggable = function () {
+    this.selection = [];
+    this.dragStart = {};
+  };
+  var Canvas = require('Canvas');
+  var BodyType = require('BodyType');
+  Draggable.prototype.select = function (x, y) {
+    this.dragStart.x = x;
+    this.dragStart.y = y;
+    var ctx = Canvas.current().ctx;
+    var bodies = this.bodies.filter(function (b) {
+      return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
+    });
+    this.selection = bodies;
+    var type;
+    bodies.forEach(function (b) {
+      type = BodyType.get(b.type);
+      if (!type.select) { return; }
+      type.select(b);
+    });
+  };
+  Draggable.prototype.unselect = function () {
+    var type;
+    this.selection.forEach(function (b) {
+      type = BodyType.get(b.type);
+      if (!type.select) { return; }
+      type.select(b);
+    });
+  };
+  Draggable.prototype.dragSelection = function (x, y) {
+    console.log('drag from behavior');
+    var dx = this.dragStart.x - x;
+    var dy = this.dragStart.y - y;
+    this.dragStart = {x: x, y: y};
+    var type;
+    this.selection.forEach(function (b) {
+      b.x -= dx;
+      b.y -= dy;
+    });
+  };
+
+  Draggable.dispatch = {
+    drag: function (x, y) {
+      console.log(Array.prototype.slice.call(arguments));
+      this.dragSelection(x, y);
+    },
+  };
+
+  return define(Draggable);
 });
