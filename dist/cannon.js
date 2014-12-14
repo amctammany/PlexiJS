@@ -10,7 +10,7 @@ var config = {
   },
   World: {
     'main': {
-      behaviors: ['WorldDraggable'],
+      behaviors: ['WorldSelectable', 'WorldDraggable'],
 
     }
   },

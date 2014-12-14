@@ -37,8 +37,6 @@ plexi.module('World', function (require, define) {
   };
 
   //World.prototype.select = function (x, y) {
-    //this.dragStart.x = x;
-    //this.dragStart.y = y;
     //var ctx = Canvas.current().ctx;
     //var bodies = this.bodies.filter(function (b) {
       //return BodyType.get(b.type).isPointInPath(ctx, b, x, y);
@@ -71,12 +69,12 @@ plexi.module('World', function (require, define) {
   //};
 
   World.dispatch = {
-    select: function (x, y) {
-      this.select(x, y);
-    },
-    unselect: function () {
-      this.unselect();
-    },
+    //select: function (x, y) {
+      //this.select(x, y);
+    //},
+    //unselect: function () {
+      //this.unselect();
+    //},
     //drag: function (x, y) {
       //console.log(Array.prototype.slice.call(arguments));
       //this.dragSelection(x, y);
