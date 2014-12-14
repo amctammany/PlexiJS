@@ -1,32 +1,32 @@
 'use strict';
 
-plexi.behavior('Group', function (require, define) {
+plexi.behavior('RandomGroup', function (require, define) {
 
-  var Group = function () {
-    this.addProps(['template', 'group', 'rows', 'columns', 'x', 'y', 'width', 'height', 'padding']);
+  var RandomGroup = function () {
+    this.addProps(['template', 'rows', 'columns', 'x', 'y', 'width', 'height', 'padding']);
 
   };
 
-  Group.prototype = {
+  RandomGroup.prototype = {
     init: function (body) {
       var prop = function (key) {return this.prop(body, key);}.bind(this);
-      body.fill = prop('fills')[Math.floor(Math.random() * prop('fills').length)];
       body.itemWidth = (prop('width') - (prop('padding') * (prop('columns') + 1))) / prop('columns');
       body.itemHeight = (prop('height') - (prop('padding') * (prop('rows') + 1))) / prop('rows');
       body.tId = prop('template');
       var template = require('BodyType').get(body.tId);
-      var group = prop('group');
-      body.members = group.map(function (item) {
-        var i = group.indexOf(item);
+      var RandomGroup = Array.apply(0, new Array(prop('columns') * prop('rows'))).map(function () { return {};});
+      body.members = RandomGroup.map(function (item) {
+        var i = RandomGroup.indexOf(item);
         var row = Math.floor(i / prop('columns'));
         var column = i % prop('columns');
+        item.fill = prop('fills')[Math.floor(Math.random() * prop('fills').length)];
         item.x = prop('x') + prop('padding') + (prop('padding') + body.itemWidth) * column;
         item.y = prop('y') + prop('padding') + (prop('padding') + body.itemHeight) * row;
         item.width = body.itemWidth - prop('padding');
         item.height = body.itemHeight - prop('padding');
         var b = template.createBody(item);
         return b;
-      });
+      }.bind(this));
       body.initialized = true;
 
     },
@@ -55,6 +55,7 @@ plexi.behavior('Group', function (require, define) {
 
   };
 
-  return define(Group);
+  return define(RandomGroup);
 
 });
+

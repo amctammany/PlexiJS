@@ -25,15 +25,17 @@ var config = {
       behaviors: ['Rectangle', 'Selectable'],
       stroke: 'black',
       width: 20,
-      height: 20
+      height: 20,
+      selectAction: ['Stage', 'change', 'intro']
     },
     'tile-group': {
-      behaviors: ['Group'],
+      behaviors: ['RandomGroup'],
       template: 'tile',
+      fills: ['red', 'blue', 'green', 'yellow'],
       x: 50,
       y: 50,
-      columns: 2,
-      rows: 2,
+      columns: 12,
+      rows: 12,
       width: 500,
       height: 500,
       padding: 3,
