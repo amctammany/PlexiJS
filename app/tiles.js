@@ -24,7 +24,7 @@ var config = {
     'tile': {
       behaviors: ['Rectangle', 'Selectable'],
       stroke: 'black',
-      selectAction: ['Level', 'flush', '@index']
+      selectAction: ['Level', 'flood', '@index']
     },
     'tile-group': {
       behaviors: ['RandomGroup'],
@@ -63,7 +63,7 @@ var config = {
 
   Level: {
     'random': {
-      behaviors: ['LevelTiled'],
+      behaviors: ['LevelTiled', 'LevelFlood'],
       rows: 10,
       columns: 10,
       width: 500,

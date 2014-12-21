@@ -7,7 +7,6 @@ plexi.behavior('Selectable', function (require, define) {
 
   function applyAction(self, action, body) {
     var fn = action[0];
-    console.log(self)
     if (fn[0] === '@') {
       self[fn.slice(1)].apply(self, [body].concat(action.slice(1)));
     } else {

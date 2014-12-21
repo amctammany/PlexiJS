@@ -7,12 +7,6 @@ plexi.behavior('LevelTiled', function (require, define) {
     this.length = this.prop(this, 'rows') * this.prop(this, 'columns');
     this.cells = Array.apply(0, new Array(this.length)).map(function () {return {};});
   };
-  function getPosition(index, rows, columns) {
-    var col = index % columns;
-    var row = Math.floor(index / columns);
-    return {row: row, col: col};
-  }
-
   Tiled.prototype = {
     init: function () {
       if (!this.dirty) { return false; }
@@ -25,7 +19,7 @@ plexi.behavior('LevelTiled', function (require, define) {
       var rows = prop('rows'), columns = prop('columns');
       var x = prop('x'), y = prop('y');
       this.bodies = this.cells.map(function (cell, index) {
-        pos = getPosition(index, rows, columns);
+        pos = plexi.getGridPosition(index, rows, columns);
         return {type: type.id,  config: {x: x + (pos.col * tileWidth), y: y + (pos.row * tileHeight), fill: prop('template').fill(), index: index, width: tileWidth, height: tileHeight }};
       }.bind(this));
 
