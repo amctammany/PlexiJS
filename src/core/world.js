@@ -12,6 +12,15 @@ plexi.module('World', function (require, define) {
     plexi.applyConfig(this, config, _private);
   };
 
+  World.createBody = function createBody (type, config) {
+    var bodytype = BodyType.get(type);
+    if (!config) {
+      console.log('Invalid Configuration for BodyType: ' + type);
+      return;
+    }
+    var body = bodytype.createBody(config);
+    return body;
+  };
   World.prototype.init = function () {
     this.reset();
     return this;
@@ -39,9 +48,10 @@ plexi.module('World', function (require, define) {
   };
 
   World.prototype.load = function (obj) {
-    obj.bodies.forEach(function (b) {
-      this.addBody(b.type, b.config);
+    obj.bodies = obj.bodies.map(function (b) {
+      return this.addBody(b.type, b.config);
     }.bind(this));
+    if (obj.hasOwnProperty('loaded')) {obj.loaded = true;}
   };
 
   World.prototype.reset = function () {
@@ -95,6 +105,9 @@ plexi.module('World', function (require, define) {
       //this.dragSelection(x, y);
     //},
 
+    createBody: function (type, config) {
+      return createBody(type, config);
+    },
     reset: function () {
       this.reset();
     },

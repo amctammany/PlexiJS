@@ -96,6 +96,10 @@ var plexi = (function () {
         };
         Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
+        //console.log(Object.keys(constructor))
+        //Object.keys(constructor).forEach(function (k) {
+          //Klass[k] = constructor[k];
+        //});
         Klass.prototype.dispatch = Object.create(constructor.dispatch || {});
         decorateKlass(Klass);
         applyKlassBehaviors(Klass, config.behaviors);
@@ -128,10 +132,11 @@ var plexi = (function () {
         if (n === 'change') {
           module.change(args[0]);
         }
+        var current = module.current();
         //console.log(module._current.dispatch[n]);
-        if (module._current.dispatch[n]) {
+        if (current.dispatch[n]) {
           //console.log(n);
-          module._current.dispatch[n].apply(module._current, args);
+          current.dispatch[n].apply(current, args);
         } else {
           // plexi logging
         }
@@ -315,7 +320,10 @@ var plexi = (function () {
         return opts[Math.floor((Math.random() * l))];
       };
     },
-
-
+    getGridPosition: function (index, rows, columns) {
+      var col = index % columns;
+      var row = Math.floor(index / columns);
+      return {row: row, column: col};
+    },
   };
 })();

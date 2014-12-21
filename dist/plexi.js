@@ -96,6 +96,10 @@ var plexi = (function () {
         };
         Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
+        //console.log(Object.keys(constructor))
+        //Object.keys(constructor).forEach(function (k) {
+          //Klass[k] = constructor[k];
+        //});
         Klass.prototype.dispatch = Object.create(constructor.dispatch || {});
         decorateKlass(Klass);
         applyKlassBehaviors(Klass, config.behaviors);
@@ -128,10 +132,11 @@ var plexi = (function () {
         if (n === 'change') {
           module.change(args[0]);
         }
+        var current = module.current();
         //console.log(module._current.dispatch[n]);
-        if (module._current.dispatch[n]) {
+        if (current.dispatch[n]) {
           //console.log(n);
-          module._current.dispatch[n].apply(module._current, args);
+          current.dispatch[n].apply(current, args);
         } else {
           // plexi logging
         }
@@ -315,8 +320,11 @@ var plexi = (function () {
         return opts[Math.floor((Math.random() * l))];
       };
     },
-
-
+    getGridPosition: function (index, rows, columns) {
+      var col = index % columns;
+      var row = Math.floor(index / columns);
+      return {row: row, column: col};
+    },
   };
 })();
 
@@ -561,6 +569,7 @@ plexi.module('Level', function (require, define) {
     this.config = config;
     this.bodies = [];
     this.dirty = true;
+    this.loaded = false;
     plexi.applyConfig(this, config, _private);
   };
 
@@ -570,6 +579,7 @@ plexi.module('Level', function (require, define) {
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
     });
+    this.loaded = false;
     return this;
   };
 
@@ -701,6 +711,15 @@ plexi.module('World', function (require, define) {
     plexi.applyConfig(this, config, _private);
   };
 
+  World.createBody = function createBody (type, config) {
+    var bodytype = BodyType.get(type);
+    if (!config) {
+      console.log('Invalid Configuration for BodyType: ' + type);
+      return;
+    }
+    var body = bodytype.createBody(config);
+    return body;
+  };
   World.prototype.init = function () {
     this.reset();
     return this;
@@ -728,9 +747,10 @@ plexi.module('World', function (require, define) {
   };
 
   World.prototype.load = function (obj) {
-    obj.bodies.forEach(function (b) {
-      this.addBody(b.type, b.config);
+    obj.bodies = obj.bodies.map(function (b) {
+      return this.addBody(b.type, b.config);
     }.bind(this));
+    if (obj.hasOwnProperty('loaded')) {obj.loaded = true;}
   };
 
   World.prototype.reset = function () {
@@ -784,6 +804,9 @@ plexi.module('World', function (require, define) {
       //this.dragSelection(x, y);
     //},
 
+    createBody: function (type, config) {
+      return createBody(type, config);
+    },
     reset: function () {
       this.reset();
     },
@@ -954,19 +977,131 @@ plexi.behavior('Group', function (require, define) {
 
 'use strict';
 
+plexi.behavior('LevelFlood', function (require, define) {
+  var _private = {
+
+
+  };
+  var directions = [0, 1, 2, 3];
+
+  var Flood = function () {
+    this.addProps(['rows', 'columns', 'types']);
+    this.floodSet = new Array(this.prop(this, 'size'));
+    this.floodFound = 0;
+  };
+
+  Flood.prototype = {
+    flood: function (row, column, fill) {
+      //console.log(this.translateCell(index, 0));
+      var index = this.getIndex(row, column);
+      var cell = this.bodies[index];
+      var first = false;
+      if (fill === -1) {
+        first = true;
+        fill = cell.fill;
+      }
+      if (cell === null) { return; }
+      var columns = this.prop(this, 'columns'), rows = this.prop(this, 'rows');
+      if (column >= columns || column < 0 || row >= rows || row < 0) {
+        return;
+      }
+      if (this.floodSet[index] === 1 || (!first && fill !== cell.fill) ) {
+        return;
+      }
+      this.floodSet[index] = 1;
+      this.flood(row + 1, column, fill);
+      this.flood(row - 1, column, fill);
+      this.flood(row, column + 1, fill);
+      this.flood(row, column - 1, fill);
+
+      if (first === true && this.floodFound === 0) {
+        return;
+      }
+      this.bodies[index] = null;
+      this.floodFound += 1;
+      //var next;
+      //var flood = directions.reduce(function (prev, current) {
+        //next = this.translateCell(prev[prev.length-1], current);
+        //if (prev.indexOf(c)) {
+
+        //}
+        //console.log(next);
+      //}.bind(this), acc);
+    },
+    shuffleDown: function () {
+      for (var column = 0, columns = this.prop(this, 'columns'); column < columns; column++ ) {
+        var distance = 0;
+        for (var row = 0, rows = this.prop(this, 'rows'); row < rows; row++) {
+          if (this.bodies[this.getIndex(row, column)] === null) {
+            distance += 1;
+          } else {
+            if (distance > 0) {
+              var cell = this.bodies[this.getIndex(row, column)];
+              cell.y += distance * this.prop(cell, 'height');
+            }
+          }
+
+        }
+      }
+
+    },
+    translateCell: function (index, direction) {
+      var pos = plexi.getGridPosition(index, this.rows, this.columns);
+      var newPos;
+      switch (direction) {
+        case 0:
+          newPos = index - this.columns;
+          break;
+        case 1:
+          newPos = index + 1;
+          break;
+        case 2:
+          newPos = index + this.columns;
+          break;
+        case 3:
+          newPos = index - 1;
+          break;
+        default:
+          console.log('Invalid translation');
+          newPos = index;
+          break;
+      }
+      if (newPos < 0 || newPos > this.length) {
+        console.log('Invalid translation');
+        return false;
+      }
+      return newPos;
+    },
+
+  };
+
+  Flood.dispatch = {
+    flood: function (row, column) {
+      //console.log(this);
+      //var index = this.getIndex(row, column);
+      //console.log(index);
+      //var cell = this.bodies[this.getIndex(row, column)];
+
+      return this.flood(row, column, -1);//, [cell];
+      plexi.publish
+    },
+  };
+
+  return define(Flood);
+
+
+});
+
+'use strict';
+
 plexi.behavior('LevelTiled', function (require, define) {
+  var World = require('World');
 
   var Tiled = function () {
     this.addProps(['rows', 'columns', 'template']);
-    this.length = this.prop(this, 'rows') * this.prop(this, 'columns');
-    this.cells = Array.apply(0, new Array(this.length)).map(function () {return {};});
+    this.size = this.prop(this, 'rows') * this.prop(this, 'columns');
+    this.cells = Array.apply(0, new Array(this.size)).map(function () {return {};});
   };
-  function getPosition(index, rows, columns) {
-    var col = index % columns;
-    var row = Math.floor(index / columns);
-    return {row: row, col: col};
-  }
-
   Tiled.prototype = {
     init: function () {
       if (!this.dirty) { return false; }
@@ -979,14 +1114,20 @@ plexi.behavior('LevelTiled', function (require, define) {
       var rows = prop('rows'), columns = prop('columns');
       var x = prop('x'), y = prop('y');
       this.bodies = this.cells.map(function (cell, index) {
-        pos = getPosition(index, rows, columns);
-        return {type: type.id,  config: {x: x + (pos.col * tileWidth), y: y + (pos.row * tileHeight), fill: prop('template').fill(), index: index, width: tileWidth, height: tileHeight }};
-      }.bind(this));
+        pos = plexi.getGridPosition(index, rows, columns);
+        var row = pos.row, column = pos.column;
+        return {type: type.id,  config: {x: x + (column * tileWidth), y: y + (row * tileHeight), fill: prop('template').fill(), index: index, row: row, column: column, width: tileWidth, height: tileHeight }};
+      });
+
+    },
+    getIndex: function (row, column) {
+      var rows = this.prop(this, 'rows'), columns = this.prop(this, 'columns');
+      return (row * columns) + column;
 
     },
   };
 
-  return define(Tiled);
+    return define(Tiled);
 
 });
 
@@ -1092,7 +1233,6 @@ plexi.behavior('Selectable', function (require, define) {
 
   function applyAction(self, action, body) {
     var fn = action[0];
-    console.log(self)
     if (fn[0] === '@') {
       self[fn.slice(1)].apply(self, [body].concat(action.slice(1)));
     } else {
@@ -1195,6 +1335,7 @@ plexi.behavior('WorldSelectable', function (require, define) {
       if (!type.select) { return; }
       type.select(b);
     });
+    return bodies;
   };
   Selectable.prototype.unselect = function () {
     var type;
@@ -1207,7 +1348,7 @@ plexi.behavior('WorldSelectable', function (require, define) {
 
   Selectable.dispatch = {
     select: function (x, y) {
-      this.select(x, y);
+      return this.select(x, y);
     },
     unselect: function () {
       this.unselect();

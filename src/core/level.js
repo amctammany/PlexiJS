@@ -11,6 +11,7 @@ plexi.module('Level', function (require, define) {
     this.config = config;
     this.bodies = [];
     this.dirty = true;
+    this.loaded = false;
     plexi.applyConfig(this, config, _private);
   };
 
@@ -20,6 +21,7 @@ plexi.module('Level', function (require, define) {
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
     });
+    this.loaded = false;
     return this;
   };
 

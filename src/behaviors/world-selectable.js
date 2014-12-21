@@ -20,6 +20,7 @@ plexi.behavior('WorldSelectable', function (require, define) {
       if (!type.select) { return; }
       type.select(b);
     });
+    return bodies;
   };
   Selectable.prototype.unselect = function () {
     var type;
@@ -32,7 +33,7 @@ plexi.behavior('WorldSelectable', function (require, define) {
 
   Selectable.dispatch = {
     select: function (x, y) {
-      this.select(x, y);
+      return this.select(x, y);
     },
     unselect: function () {
       this.unselect();
