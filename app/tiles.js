@@ -25,7 +25,12 @@ var config = {
       behaviors: ['Label'],
       textColor: 'black',
       padding: 10,
-
+    },
+    'outlet': {
+      behaviors: ['Label', 'Outlet'],
+      textColor: 'black',
+      padding: 10,
+      defaultText: 0.0,
     },
     'tile': {
       behaviors: ['Rectangle', 'Selectable'],
@@ -56,7 +61,8 @@ var config = {
     'level': {
       bodies: [
         {type: 'button', x: 5, y: 5, width: 100, height: 25, text: 'Back', action: ['Stage', 'change', 'intro']},
-        {type: 'label', x: 300, y: 5, text: 'Score: ', height: 25, width: 200}
+        {type: 'label', x: 300, y: 5, text: 'Score: ', height: 25, width: 100},
+        {type: 'outlet', x: 400, y: 5, channel: 'Game.score', height: 25, width: 100}
       ],
     },
     'scores': {
