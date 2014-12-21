@@ -24,7 +24,7 @@ var config = {
     'tile': {
       behaviors: ['Rectangle', 'Selectable'],
       stroke: 'black',
-      selectAction: ['Level', 'flush', '@index']
+      selectAction: ['Level', 'flood', '@index']
     },
     'tile-group': {
       behaviors: ['RandomGroup'],
