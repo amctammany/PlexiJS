@@ -16,7 +16,7 @@ plexi.module('Level', function (require, define) {
   };
 
   Level.prototype.init = function () {
-    if (!this.dirty) {return false;}
+    //if (!this.dirty) {return false;}
     console.log('regular init');
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
@@ -32,6 +32,7 @@ plexi.module('Level', function (require, define) {
 
   Level.dispatch = {
     change: function (id) {
+      console.log('changed level');
       this.reset();
       plexi.publish(['Stage', 'loadLevel', id]);
     },

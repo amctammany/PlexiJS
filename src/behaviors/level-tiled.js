@@ -11,6 +11,7 @@ plexi.behavior('LevelTiled', function (require, define) {
   Tiled.prototype = {
     init: function () {
       if (!this.dirty) { return false; }
+      console.log('init level')
       var prop = function (key) {return this.prop(this, key);}.bind(this);
       var type = require('BodyType').get(prop('template').id);
       var tileWidth = prop('width') / prop('columns');
@@ -27,7 +28,7 @@ plexi.behavior('LevelTiled', function (require, define) {
 
     },
     getIndex: function (row, column) {
-      var rows = this.prop(this, 'rows'), columns = this.prop(this, 'columns');
+      var columns = this.prop(this, 'columns');
       return (row * columns) + column;
 
     },

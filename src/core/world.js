@@ -25,15 +25,19 @@ plexi.module('World', function (require, define) {
     this.reset();
     return this;
   };
+  World.prototype.removeBody = function (body) {
+    var index = this.bodies.indexOf(body);
+  };
 
   World.prototype.addBody = function (type, config) {
     var bodytype = BodyType.get(type);
     if (!config) {
-      console.log('Invalid Configuration for BodyType: ' + type);
+      console.log('Invalid Configuration for BodyType: ' + type + '; config ' + config);
       return;
     }
     var body = bodytype.createBody(config);
     this.bodies.push(body);
+    body.index = this.bodies.length - 1;
     if (bodytype.init) {
       bodytype.init(body);
       if (body.members) {
@@ -48,6 +52,8 @@ plexi.module('World', function (require, define) {
   };
 
   World.prototype.load = function (obj) {
+
+    //if (obj.loaded) { return false; }
     obj.bodies = obj.bodies.map(function (b) {
       return this.addBody(b.type, b.config);
     }.bind(this));

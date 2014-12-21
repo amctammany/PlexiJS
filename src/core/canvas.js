@@ -65,6 +65,7 @@ plexi.module('Canvas', function (require, define) {
     var ctx = this.ctx;
     ctx.clearRect(0, 0, this.constants.width, this.constants.height);
     world.bodies.forEach(function (body) {
+      if (body.hidden) {return;}
       _private.drawMethods[body.type](ctx, body);
     });
   };

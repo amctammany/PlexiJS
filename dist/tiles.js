@@ -24,23 +24,19 @@ var config = {
     'tile': {
       behaviors: ['Rectangle', 'Selectable'],
       stroke: 'black',
-<<<<<<< HEAD
-      selectAction: ['Level', 'flood', '@index']
-=======
       selectAction: ['Level', 'flood', '@row', '@column']
->>>>>>> createbody
     },
-    'tile-group': {
-      behaviors: ['RandomGroup'],
-      template: 'tile',
-      x: 50,
-      y: 50,
-      columns: 10,
-      rows: 10,
-      width: 500,
-      height: 500,
-      padding: 3,
-    },
+    //'tile-group': {
+      //behaviors: ['RandomGroup'],
+      //template: 'tile',
+      //x: 50,
+      //y: 50,
+      //columns: 4,
+      //rows: 4,
+      //width: 200,
+      //height: 200,
+      //padding: 3,
+    //},
 
   },
 
@@ -83,7 +79,7 @@ var config = {
   Mouse: {
     'default': {
       events: {
-        'mousedown': ['World', 'select', '@x', '@y'],
+        'mouseup': ['World', 'select', '@x', '@y'],
       },
     },
   },

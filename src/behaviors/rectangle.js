@@ -3,6 +3,7 @@
 plexi.behavior('Rectangle', function (require, define) {
   var Rectangle = function () {
     this.addProps(['x', 'y', 'width', 'height']);
+    this.opacity = 1;
   };
 
   Rectangle.prototype = {
@@ -20,6 +21,7 @@ plexi.behavior('Rectangle', function (require, define) {
     },
 
     isPointInPath: function (ctx, body, x, y) {
+      if (body.hidden) {return false;}
       this.createPath(ctx, body);
       return ctx.isPointInPath(x, y);
     },

@@ -29,12 +29,15 @@ plexi.module('Stage', function (require, define) {
 
   Stage.prototype.loadLevel = function (id) {
     var level = Level.get(id);
+    console.log(level);
+    level.dirty = true;
     level.init();
     require('World').current().load(level);
 
   };
 
   Stage.prototype.reset = function () {
+    this.dirty = true;
     this.init();
 
   };
