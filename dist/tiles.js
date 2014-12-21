@@ -21,6 +21,12 @@ var config = {
       textColor: 'black',
       padding: 8,
     },
+    'label': {
+      behaviors: ['Label'],
+      textColor: 'black',
+      padding: 10,
+
+    },
     'tile': {
       behaviors: ['Rectangle', 'Selectable'],
       stroke: 'black',
@@ -50,6 +56,7 @@ var config = {
     'level': {
       bodies: [
         {type: 'button', x: 5, y: 5, width: 100, height: 25, text: 'Back', action: ['Stage', 'change', 'intro']},
+        {type: 'label', x: 300, y: 5, text: 'Score: ', height: 25, width: 200}
       ],
     },
     'scores': {
