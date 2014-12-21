@@ -14,9 +14,7 @@ plexi.behavior('LevelFlood', function (require, define) {
   };
 
   Flood.prototype = {
-    flood: function (index, acc) {
-      var cell = this.bodies[index];
-      //console.log(cell);
+    flood: function (cell, acc) {
       var fill = this.prop(cell, 'config').fill;
       //console.log(this.translateCell(index, 0));
       console.log(fill);
@@ -75,8 +73,8 @@ plexi.behavior('LevelFlood', function (require, define) {
       var cell = this.bodies[index];
       console.log(cell);
 
-      return this.flood(cell.index, direction), [cell];
-    }.bind(this),
+      return this.flood(cell, direction);//, [cell];
+    },
   };
 
   return define(Flood);
