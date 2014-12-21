@@ -92,6 +92,10 @@ var config = {
         Stage: 'intro',
         Mouse: 'default',
       },
+      vars: {
+        time: 0,
+        score: 0,
+      },
     },
   },
 

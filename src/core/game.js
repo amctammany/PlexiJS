@@ -6,6 +6,11 @@ plexi.module('Game', function (require, define) {
       this.defaults = config;
       return this;
     },
+    vars: function (names) {
+      Object.keys(names).forEach(function (n) {
+        this[n] = void 0;
+      }.bind(this));
+    },
 
   };
   var _world, _stage, _canvas;
@@ -49,6 +54,10 @@ plexi.module('Game', function (require, define) {
       //plexi.publish([d, 'reset']);
     });
     console.log('reset game: ' + this);
+  };
+
+  Game.prototype.getVar = function (key) {
+    return this[key];
   };
 
   Game.dispatch = {

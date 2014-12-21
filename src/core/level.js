@@ -26,7 +26,7 @@ plexi.module('Level', function (require, define) {
   };
 
   Level.prototype.reset = function () {
-    this.init();
+    //this.init();
     this.dirty = false;
   };
 

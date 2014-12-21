@@ -503,6 +503,11 @@ plexi.module('Game', function (require, define) {
       this.defaults = config;
       return this;
     },
+    vars: function (names) {
+      Object.keys(names).forEach(function (n) {
+        this[n] = void 0;
+      }.bind(this));
+    },
 
   };
   var _world, _stage, _canvas;
@@ -548,6 +553,10 @@ plexi.module('Game', function (require, define) {
     console.log('reset game: ' + this);
   };
 
+  Game.prototype.getVar = function (key) {
+    return this[key];
+  };
+
   Game.dispatch = {
     refresh: function () {
       this.refresh();
@@ -585,7 +594,7 @@ plexi.module('Level', function (require, define) {
   };
 
   Level.prototype.reset = function () {
-    this.init();
+    //this.init();
     this.dirty = false;
   };
 
