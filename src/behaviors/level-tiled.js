@@ -1,11 +1,12 @@
 'use strict';
 
 plexi.behavior('LevelTiled', function (require, define) {
+  var World = require('World');
 
   var Tiled = function () {
     this.addProps(['rows', 'columns', 'template']);
-    this.length = this.prop(this, 'rows') * this.prop(this, 'columns');
-    this.cells = Array.apply(0, new Array(this.length)).map(function () {return {};});
+    this.size = this.prop(this, 'rows') * this.prop(this, 'columns');
+    this.cells = Array.apply(0, new Array(this.size)).map(function () {return {};});
   };
   Tiled.prototype = {
     init: function () {
@@ -20,12 +21,18 @@ plexi.behavior('LevelTiled', function (require, define) {
       var x = prop('x'), y = prop('y');
       this.bodies = this.cells.map(function (cell, index) {
         pos = plexi.getGridPosition(index, rows, columns);
-        return {type: type.id,  config: {x: x + (pos.col * tileWidth), y: y + (pos.row * tileHeight), fill: prop('template').fill(), index: index, width: tileWidth, height: tileHeight }};
-      }.bind(this));
+        var row = pos.row, column = pos.column;
+        return {type: type.id,  config: {x: x + (column * tileWidth), y: y + (row * tileHeight), fill: prop('template').fill(), index: index, row: row, column: column, width: tileWidth, height: tileHeight }};
+      });
+
+    },
+    getIndex: function (row, column) {
+      var rows = this.prop(this, 'rows'), columns = this.prop(this, 'columns');
+      return (row * columns) + column;
 
     },
   };
 
-  return define(Tiled);
+    return define(Tiled);
 
 });

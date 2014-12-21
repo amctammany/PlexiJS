@@ -24,12 +24,11 @@ var config = {
     'tile': {
       behaviors: ['Rectangle', 'Selectable'],
       stroke: 'black',
-      selectAction: ['Level', 'flood', '@index']
+      selectAction: ['Level', 'flood', '@row', '@column']
     },
     'tile-group': {
       behaviors: ['RandomGroup'],
       template: 'tile',
-      fills: ['red', 'blue', 'green', 'yellow'],
       x: 50,
       y: 50,
       columns: 10,

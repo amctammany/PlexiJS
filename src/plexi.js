@@ -96,6 +96,10 @@ var plexi = (function () {
         };
         Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
+        //console.log(Object.keys(constructor))
+        //Object.keys(constructor).forEach(function (k) {
+          //Klass[k] = constructor[k];
+        //});
         Klass.prototype.dispatch = Object.create(constructor.dispatch || {});
         decorateKlass(Klass);
         applyKlassBehaviors(Klass, config.behaviors);
@@ -319,7 +323,7 @@ var plexi = (function () {
     getGridPosition: function (index, rows, columns) {
       var col = index % columns;
       var row = Math.floor(index / columns);
-      return {row: row, col: col};
+      return {row: row, column: col};
     },
   };
 })();

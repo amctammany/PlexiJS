@@ -8,16 +8,40 @@ plexi.behavior('LevelFlood', function (require, define) {
   var directions = [0, 1, 2, 3];
 
   var Flood = function () {
-    this.addProps(['rows', 'columns']);
-    this.rows = this.prop(this, 'rows');
-    this.columns = this.prop(this, 'columns');
+    this.addProps(['rows', 'columns', 'types']);
+    this.floodSet = new Array(this.prop(this, 'size'));
+    this.floodFound = 0;
   };
 
   Flood.prototype = {
-    flood: function (cell, acc) {
-      var fill = this.prop(cell, 'config').fill;
+    flood: function (row, column, fill) {
       //console.log(this.translateCell(index, 0));
-      console.log(fill);
+      var index = this.getIndex(row, column);
+      var cell = this.bodies[index];
+      var first = false;
+      if (fill === -1) {
+        first = true;
+        fill = cell.fill;
+      }
+      if (cell === null) { return; }
+      var columns = this.prop(this, 'columns'), rows = this.prop(this, 'rows');
+      if (column >= columns || column < 0 || row >= rows || row < 0) {
+        return;
+      }
+      if (this.floodSet[index] === 1 || (!first && fill !== cell.fill) ) {
+        return;
+      }
+      this.floodSet[index] = 1;
+      this.flood(row + 1, column, fill);
+      this.flood(row - 1, column, fill);
+      this.flood(row, column + 1, fill);
+      this.flood(row, column - 1, fill);
+
+      if (first === true && this.floodFound === 0) {
+        return;
+      }
+      this.bodies[index] = null;
+      this.floodFound += 1;
       //var next;
       //var flood = directions.reduce(function (prev, current) {
         //next = this.translateCell(prev[prev.length-1], current);
@@ -26,15 +50,22 @@ plexi.behavior('LevelFlood', function (require, define) {
         //}
         //console.log(next);
       //}.bind(this), acc);
-      cell.fill = 'white';
-      //var flood = directions.reduce(function (prev, current) {
-        //if (prev.indexOf(current.index)) {
-          //return;
-        //}
-        //return prev.concat(this.flood.call(this, cell.index, flood));
+    },
+    shuffleDown: function () {
+      for (var column = 0, columns = this.prop(this, 'columns'); column < columns; column++ ) {
+        var distance = 0;
+        for (var row = 0, rows = this.prop(this, 'rows'); row < rows; row++) {
+          if (this.bodies[this.getIndex(row, column)] === null) {
+            distance += 1;
+          } else {
+            if (distance > 0) {
+              var cell = this.bodies[this.getIndex(row, column)];
+              cell.y += distance * this.prop(cell, 'height');
+            }
+          }
 
-      //}.bind(this), [cell.index]);
-      //console.log(flood);
+        }
+      }
 
     },
     translateCell: function (index, direction) {
@@ -68,12 +99,14 @@ plexi.behavior('LevelFlood', function (require, define) {
   };
 
   Flood.dispatch = {
-    flood: function (index, direction) {
-      console.log(this);
-      var cell = this.bodies[index];
-      console.log(cell);
+    flood: function (row, column) {
+      //console.log(this);
+      //var index = this.getIndex(row, column);
+      //console.log(index);
+      //var cell = this.bodies[this.getIndex(row, column)];
 
-      return this.flood(cell, direction);//, [cell];
+      return this.flood(row, column, -1);//, [cell];
+      plexi.publish
     },
   };
 
