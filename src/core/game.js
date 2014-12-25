@@ -25,14 +25,18 @@ plexi.module('Game', function (require, define) {
   };
   Game.prototype.updateVar = function (n) {
     return function (newValue) {
+      if (newValue === undefined) {
+        return 'undefined';
+      }
       if (newValue[0] === '+') {
         console.log('incrementing game varible: ' + n);
         this[n] += newValue[1];
+        console.log(this[n]);
       } else {
         console.log('updating game variable: ' + n);
         this[n] = newValue[0];
-
       }
+      return this[n];
     }.bind(this);
   };
   var _animLoop, _animFn;

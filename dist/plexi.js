@@ -522,14 +522,18 @@ plexi.module('Game', function (require, define) {
   };
   Game.prototype.updateVar = function (n) {
     return function (newValue) {
+      if (newValue === undefined) {
+        return 'undefined';
+      }
       if (newValue[0] === '+') {
         console.log('incrementing game varible: ' + n);
         this[n] += newValue[1];
+        console.log(this[n]);
       } else {
         console.log('updating game variable: ' + n);
         this[n] = newValue[0];
-
       }
+      return this[n];
     }.bind(this);
   };
   var _animLoop, _animFn;
@@ -1169,8 +1173,8 @@ plexi.behavior('LevelFlood', function (require, define) {
       //var cell = this.bodies[this.getIndex(row, column)];
 
       this.flood(row, column, -1);//, [cell];
-      console.log(this.floodFound);
-      plexi.publish(['Game.score', (this.floodFound - 1) * (this.floodFound - 1)]);
+      //console.log(this.floodFound);
+      plexi.publish(['Game.score', '+', (this.floodFound - 1) * (this.floodFound - 1)]);
       this.shuffleDown();
     },
   };
@@ -1230,14 +1234,21 @@ plexi.behavior('Outlet', function (require, define) {
 
   Outlet.prototype = {
     init: function (body) {
-      console.log('init outlet');
-      console.log(body);
+      //console.log('init outlet');
+      //console.log(body);
       plexi.subscribe(this.prop(body, 'channel'), this.refresh(body));
       body.text = body.defaultText;
     },
     refresh: function (body) {
+      var prop = this.prop;
       return function (newValue) {
-        body.text = newValue[0];
+        console.log(prop(body, 'channel'));
+        //var score = plexi.publish([prop(body, 'channel')]);
+        //console.log(score);
+
+        return prop(body, 'channel');
+        console.log(newValue);
+        body.text = newValue[1];
         console.log('new Value: ' + newValue);
       };
     },
