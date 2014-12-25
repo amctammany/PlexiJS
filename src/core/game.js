@@ -7,8 +7,12 @@ plexi.module('Game', function (require, define) {
       return this;
     },
     vars: function (names) {
-      Object.keys(names).forEach(function (n) {
-        this[n] = void 0;
+      this.vars = Object.keys(names);
+      var name;
+      this.vars.forEach(function (n) {
+        name = 'Game.'+n;
+        plexi.subscribe(name, this.updateVar(n));
+        this[n] = names[n];
       }.bind(this));
     },
 
@@ -19,8 +23,23 @@ plexi.module('Game', function (require, define) {
     this.id = id;
     plexi.applyConfig(this, config, _private);
   };
+  Game.prototype.updateVar = function (n) {
+    return function (newValue) {
+      if (newValue[0] === '+') {
+        console.log('incrementing game varible: ' + n);
+        this[n] += newValue[1];
+      } else {
+        console.log('updating game variable: ' + n);
+        this[n] = newValue[0];
+
+      }
+    }.bind(this);
+  };
   var _animLoop, _animFn;
   Game.prototype.start = function () {
+    this.vars.forEach(function (n) {
+      plexi.publish(['Game.'+n, this[n]]);
+    }.bind(this));
     _private.paused = false;
     _animFn = this.animate.bind(this);
     _animFn();

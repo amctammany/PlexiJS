@@ -111,6 +111,8 @@ plexi.behavior('LevelFlood', function (require, define) {
       //var cell = this.bodies[this.getIndex(row, column)];
 
       this.flood(row, column, -1);//, [cell];
+      console.log(this.floodFound);
+      plexi.publish(['Game.score', (this.floodFound - 1) * (this.floodFound - 1)]);
       this.shuffleDown();
     },
   };
