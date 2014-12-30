@@ -4,6 +4,7 @@ describe('plexi::Game', function () {
   var Game;
 
   beforeEach(function () {
+    plexi.reset();
     Game = plexi.module('Game');
     plexi.module('BodyType').create('t1', {behaviors: ['Rectangle'], width: 100, height: 100});
     plexi.module('BodyType').create('t2', {behaviors: ['Circle'], radius: 100});

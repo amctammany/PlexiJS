@@ -20,7 +20,7 @@ plexi.module('Canvas', function (require, define) {
 
 
   Canvas.prototype.init = function () {
-    if (!this.valid) {console.log('bad canvas'); return false;}
+    if (!this.valid) {console.log('bad canvas. Missing: ['+this.ivars); return false;}
     this.$canvas = document.getElementById(this.constants.element);
     this.$canvas = this.$canvas || document.createElement('canvas');
     this.$canvas.width = this.constants.width;

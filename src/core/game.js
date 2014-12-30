@@ -7,6 +7,7 @@ plexi.module('Game', function (require, define) {
       return this;
     },
     vars: function (names) {
+      if (!names) { return false; }
       this.vars = {};
       this.defVars = names;
       var name;
@@ -42,9 +43,12 @@ plexi.module('Game', function (require, define) {
   };
   var _animLoop, _animFn;
   Game.prototype.start = function () {
+    if (!!this.vars) {
+
     Object.keys(this.vars).forEach(function(n) {
       this.vars[n] = this.defVars[n];
     }.bind(this));
+    }
     //this.vars.forEach(function (n) {
       //plexi.publish(['Game.'+n, this[n]]);
     //}.bind(this));

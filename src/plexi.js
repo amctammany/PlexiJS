@@ -112,6 +112,7 @@ var plexi = (function () {
       },
       reset: function () {
         module._children = {};
+        module._current = void 0;
       },
       children: function () {
         return Object.keys(module._children).map(function (c) {return module._children[c];});

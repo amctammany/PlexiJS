@@ -1,16 +1,17 @@
 'use strict';
 
 describe('plexi::World', function () {
-  var World;
-  var level = {
-    bodies: [
-      {type: 't1', config: {x: 10, y: 15}},
-      {type: 't2', config: {x: 20, y: 25}},
-    ]
-  };
+  var World, level;
 
 
   beforeEach(function () {
+    level = {
+      bodies: [
+        {type: 't1', config: {x: 10, y: 15}},
+        {type: 't2', config: {x: 20, y: 25}},
+      ]
+    };
+
     plexi.reset();
     World = plexi.module('World');
     plexi.module('BodyType').create('t1', {behaviors: ['Rectangle'], width: 100, height: 100});
@@ -41,7 +42,7 @@ describe('plexi::World', function () {
     expect(w.bodies.length).toBe(2);
   });
   it('should reset level', function () {
-    var w = World.create('w', {});
+    var w = World.create('w1', {});
     w.init();
     w.load(level);
     expect(w.bodies.length).toBe(2);

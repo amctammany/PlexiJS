@@ -112,6 +112,7 @@ var plexi = (function () {
       },
       reset: function () {
         module._children = {};
+        module._current = void 0;
       },
       children: function () {
         return Object.keys(module._children).map(function (c) {return module._children[c];});
@@ -452,7 +453,7 @@ plexi.module('Canvas', function (require, define) {
 
 
   Canvas.prototype.init = function () {
-    if (!this.valid) {console.log('bad canvas'); return false;}
+    if (!this.valid) {console.log('bad canvas. Missing: ['+this.ivars); return false;}
     this.$canvas = document.getElementById(this.constants.element);
     this.$canvas = this.$canvas || document.createElement('canvas');
     this.$canvas.width = this.constants.width;
@@ -520,6 +521,7 @@ plexi.module('Game', function (require, define) {
       return this;
     },
     vars: function (names) {
+      if (!names) { return false; }
       this.vars = {};
       this.defVars = names;
       var name;
@@ -555,9 +557,12 @@ plexi.module('Game', function (require, define) {
   };
   var _animLoop, _animFn;
   Game.prototype.start = function () {
+    if (!!this.vars) {
+
     Object.keys(this.vars).forEach(function(n) {
       this.vars[n] = this.defVars[n];
     }.bind(this));
+    }
     //this.vars.forEach(function (n) {
       //plexi.publish(['Game.'+n, this[n]]);
     //}.bind(this));
