@@ -18,8 +18,8 @@ var plexi = (function () {
   }
   function decorateKlass(klass) {
     //if (!i) {return;}
-    //klass.properties = i.properties || [];
-    //klass.constants = i.constants || [];
+    klass.properties = klass.properties || [];
+    klass.constants = klass.constants || [];
     klass.prototype.addProps = addProps;
     klass.prototype.prop = getProp;
     //klass.dispatch = klass.dispatch || {};
@@ -173,6 +173,9 @@ var plexi = (function () {
     modules: function () {
       return Object.keys(_modules).map(function (m) { return _modules[m];});
     },
+    current: function (module) {
+      return _modules[module].current();
+    },
     behavior: function (id, mixin) {
       var Behavior = plexi.module('Behavior');
       //console.log(Behavior);
@@ -264,6 +267,19 @@ var plexi = (function () {
     },
     unsubscribe: function (token) {
       return plexi.dispatch.unsubscribe(token);
+    },
+    observe: function (channel, func) {
+      var c = channel.split('.');
+      var vars = plexi.current(c[0]).vars;
+      var name = c[1];
+      Object.observe(vars, function(changes) {
+        changes.forEach(function(change) {
+          if (change.name === name) {
+            func(vars[name]);
+          }
+        });
+
+      });
     },
 
     load: function (config) {
@@ -504,12 +520,13 @@ plexi.module('Game', function (require, define) {
       return this;
     },
     vars: function (names) {
-      this.vars = Object.keys(names);
+      this.vars = {};
+      this.defVars = names;
       var name;
-      this.vars.forEach(function (n) {
+      Object.keys(names).forEach(function (n) {
         name = 'Game.'+n;
         plexi.subscribe(name, this.updateVar(n));
-        this[n] = names[n];
+        this.vars[n] = names[n];
       }.bind(this));
     },
 
@@ -527,20 +544,23 @@ plexi.module('Game', function (require, define) {
       }
       if (newValue[0] === '+') {
         console.log('incrementing game varible: ' + n);
-        this[n] += newValue[1];
-        console.log(this[n]);
+        this.vars[n] += newValue[1];
+        console.log(this.vars[n]);
       } else {
         console.log('updating game variable: ' + n);
-        this[n] = newValue[0];
+        this.vars[n] = newValue[0];
       }
-      return this[n];
+      return this.vars[n];
     }.bind(this);
   };
   var _animLoop, _animFn;
   Game.prototype.start = function () {
-    this.vars.forEach(function (n) {
-      plexi.publish(['Game.'+n, this[n]]);
+    Object.keys(this.vars).forEach(function(n) {
+      this.vars[n] = this.defVars[n];
     }.bind(this));
+    //this.vars.forEach(function (n) {
+      //plexi.publish(['Game.'+n, this[n]]);
+    //}.bind(this));
     _private.paused = false;
     _animFn = this.animate.bind(this);
     _animFn();
@@ -1236,20 +1256,12 @@ plexi.behavior('Outlet', function (require, define) {
     init: function (body) {
       //console.log('init outlet');
       //console.log(body);
-      plexi.subscribe(this.prop(body, 'channel'), this.refresh(body));
+      plexi.observe(this.prop(body, 'channel'), this.refresh(body));
       body.text = body.defaultText;
     },
     refresh: function (body) {
-      var prop = this.prop;
       return function (newValue) {
-        console.log(prop(body, 'channel'));
-        //var score = plexi.publish([prop(body, 'channel')]);
-        //console.log(score);
-
-        return prop(body, 'channel');
-        console.log(newValue);
-        body.text = newValue[1];
-        console.log('new Value: ' + newValue);
+        body.text = newValue;
       };
     },
     draw: function (ctx, body) {

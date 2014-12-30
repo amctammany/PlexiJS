@@ -7,12 +7,13 @@ plexi.module('Game', function (require, define) {
       return this;
     },
     vars: function (names) {
-      this.vars = Object.keys(names);
+      this.vars = {};
+      this.defVars = names;
       var name;
-      this.vars.forEach(function (n) {
+      Object.keys(names).forEach(function (n) {
         name = 'Game.'+n;
         plexi.subscribe(name, this.updateVar(n));
-        this[n] = names[n];
+        this.vars[n] = names[n];
       }.bind(this));
     },
 
@@ -30,20 +31,23 @@ plexi.module('Game', function (require, define) {
       }
       if (newValue[0] === '+') {
         console.log('incrementing game varible: ' + n);
-        this[n] += newValue[1];
-        console.log(this[n]);
+        this.vars[n] += newValue[1];
+        console.log(this.vars[n]);
       } else {
         console.log('updating game variable: ' + n);
-        this[n] = newValue[0];
+        this.vars[n] = newValue[0];
       }
-      return this[n];
+      return this.vars[n];
     }.bind(this);
   };
   var _animLoop, _animFn;
   Game.prototype.start = function () {
-    this.vars.forEach(function (n) {
-      plexi.publish(['Game.'+n, this[n]]);
+    Object.keys(this.vars).forEach(function(n) {
+      this.vars[n] = this.defVars[n];
     }.bind(this));
+    //this.vars.forEach(function (n) {
+      //plexi.publish(['Game.'+n, this[n]]);
+    //}.bind(this));
     _private.paused = false;
     _animFn = this.animate.bind(this);
     _animFn();

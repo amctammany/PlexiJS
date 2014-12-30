@@ -18,8 +18,8 @@ var plexi = (function () {
   }
   function decorateKlass(klass) {
     //if (!i) {return;}
-    //klass.properties = i.properties || [];
-    //klass.constants = i.constants || [];
+    klass.properties = klass.properties || [];
+    klass.constants = klass.constants || [];
     klass.prototype.addProps = addProps;
     klass.prototype.prop = getProp;
     //klass.dispatch = klass.dispatch || {};
@@ -173,6 +173,9 @@ var plexi = (function () {
     modules: function () {
       return Object.keys(_modules).map(function (m) { return _modules[m];});
     },
+    current: function (module) {
+      return _modules[module].current();
+    },
     behavior: function (id, mixin) {
       var Behavior = plexi.module('Behavior');
       //console.log(Behavior);
@@ -264,6 +267,19 @@ var plexi = (function () {
     },
     unsubscribe: function (token) {
       return plexi.dispatch.unsubscribe(token);
+    },
+    observe: function (channel, func) {
+      var c = channel.split('.');
+      var vars = plexi.current(c[0]).vars;
+      var name = c[1];
+      Object.observe(vars, function(changes) {
+        changes.forEach(function(change) {
+          if (change.name === name) {
+            func(vars[name]);
+          }
+        });
+
+      });
     },
 
     load: function (config) {

@@ -10,20 +10,12 @@ plexi.behavior('Outlet', function (require, define) {
     init: function (body) {
       //console.log('init outlet');
       //console.log(body);
-      plexi.subscribe(this.prop(body, 'channel'), this.refresh(body));
+      plexi.observe(this.prop(body, 'channel'), this.refresh(body));
       body.text = body.defaultText;
     },
     refresh: function (body) {
-      var prop = this.prop;
       return function (newValue) {
-        console.log(prop(body, 'channel'));
-        //var score = plexi.publish([prop(body, 'channel')]);
-        //console.log(score);
-
-        return prop(body, 'channel');
-        console.log(newValue);
-        body.text = newValue[1];
-        console.log('new Value: ' + newValue);
+        body.text = newValue;
       };
     },
     draw: function (ctx, body) {
