@@ -11,7 +11,7 @@ plexi.behavior('LevelTiled', function (require, define) {
   Tiled.prototype = {
     init: function () {
       if (!this.dirty) { return false; }
-      console.log('init level')
+      console.log('init level-tiled')
       var prop = function (key) {return this.prop(this, key);}.bind(this);
       var type = require('BodyType').get(prop('template').id);
       var tileWidth = prop('width') / prop('columns');
@@ -20,7 +20,7 @@ plexi.behavior('LevelTiled', function (require, define) {
       var pos;
       var rows = prop('rows'), columns = prop('columns');
       var x = prop('x'), y = prop('y');
-      this.bodies = this.cells.map(function (cell, index) {
+      this.bodyConfs = this.cells.map(function (cell, index) {
         pos = plexi.getGridPosition(index, rows, columns);
         var row = pos.row, column = pos.column;
         return {type: type.id,  config: {x: x + (column * tileWidth), y: y + (row * tileHeight), fill: prop('template').fill(), index: index, row: row, column: column, width: tileWidth, height: tileHeight }};

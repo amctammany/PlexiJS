@@ -88,7 +88,7 @@ plexi.module('Game', function (require, define) {
   };
 
   Game.prototype.getVar = function (key) {
-    return this[key];
+    return this.vars[key];
   };
 
   Game.dispatch = {

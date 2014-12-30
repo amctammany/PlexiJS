@@ -602,7 +602,7 @@ plexi.module('Game', function (require, define) {
   };
 
   Game.prototype.getVar = function (key) {
-    return this[key];
+    return this.vars[key];
   };
 
   Game.dispatch = {
@@ -633,6 +633,7 @@ plexi.module('Level', function (require, define) {
 
   Level.prototype.init = function () {
     //if (!this.dirty) {return false;}
+    if (this.loaded === true) { return; }
     console.log('regular init');
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
@@ -642,7 +643,7 @@ plexi.module('Level', function (require, define) {
   };
 
   Level.prototype.reset = function () {
-    //this.init();
+    this.init();
     this.dirty = false;
   };
 
@@ -687,7 +688,9 @@ plexi.module('Mouse', function (require, define) {
   Mouse.dispatch = {
     'event': function (e, x, y) {
       var event = this.events[e];
+      if (!event) {return false;}
       var vars = {x: x, y: y};
+      console.log('event: ' + event);
       if (event) {
         plexi.publish(parseEvent(event, vars));
       }
@@ -814,7 +817,7 @@ plexi.module('World', function (require, define) {
 
   World.prototype.load = function (obj) {
 
-    //if (obj.loaded) { return false; }
+    if (obj.loaded) { return false; }
     obj.bodies = obj.bodies.map(function (b) {
       return this.addBody(b.type, b.config);
     }.bind(this));
@@ -1222,7 +1225,7 @@ plexi.behavior('LevelTiled', function (require, define) {
   Tiled.prototype = {
     init: function () {
       if (!this.dirty) { return false; }
-      console.log('init level')
+      console.log('init level-tiled')
       var prop = function (key) {return this.prop(this, key);}.bind(this);
       var type = require('BodyType').get(prop('template').id);
       var tileWidth = prop('width') / prop('columns');
@@ -1231,7 +1234,7 @@ plexi.behavior('LevelTiled', function (require, define) {
       var pos;
       var rows = prop('rows'), columns = prop('columns');
       var x = prop('x'), y = prop('y');
-      this.bodies = this.cells.map(function (cell, index) {
+      this.bodyConfs = this.cells.map(function (cell, index) {
         pos = plexi.getGridPosition(index, rows, columns);
         var row = pos.row, column = pos.column;
         return {type: type.id,  config: {x: x + (column * tileWidth), y: y + (row * tileHeight), fill: prop('template').fill(), index: index, row: row, column: column, width: tileWidth, height: tileHeight }};

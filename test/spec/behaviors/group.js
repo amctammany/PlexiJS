@@ -1,7 +1,7 @@
 'use strict';
 
 describe('plexi::Behavior::Group', function () {
-  var Groupe;
+  var Group;
 
   beforeEach(function () {
     Group = plexi.behavior('Group');

@@ -53,7 +53,7 @@ plexi.module('World', function (require, define) {
 
   World.prototype.load = function (obj) {
 
-    //if (obj.loaded) { return false; }
+    if (obj.loaded) { return false; }
     obj.bodies = obj.bodies.map(function (b) {
       return this.addBody(b.type, b.config);
     }.bind(this));

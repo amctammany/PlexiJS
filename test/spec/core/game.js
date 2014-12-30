@@ -10,7 +10,7 @@ describe('plexi::Game', function () {
     plexi.module('BodyType').create('t2', {behaviors: ['Circle'], radius: 100});
 
     plexi.module('Canvas').create('main', {element: 'foo', width: 100, height: 100});
-    plexi.module('World').create('main', {});
+    plexi.module('World').create('main', {behaviors: ['WorldSelectable']});
     plexi.module('Mouse').create('main', {
       events: {
         'mousedown': ['World', 'select', '@x', '@y'],

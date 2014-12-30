@@ -17,6 +17,7 @@ plexi.module('Level', function (require, define) {
 
   Level.prototype.init = function () {
     //if (!this.dirty) {return false;}
+    if (this.loaded === true) { return; }
     console.log('regular init');
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
@@ -26,7 +27,7 @@ plexi.module('Level', function (require, define) {
   };
 
   Level.prototype.reset = function () {
-    //this.init();
+    this.init();
     this.dirty = false;
   };
 
