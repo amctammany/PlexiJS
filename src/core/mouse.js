@@ -26,7 +26,7 @@ plexi.module('Mouse', function (require, define) {
       var event = this.events[e];
       if (!event) {return false;}
       var vars = {x: x, y: y};
-      console.log('event: ' + event);
+      //console.log('event: ' + event);
       if (event) {
         plexi.publish(parseEvent(event, vars));
       }

@@ -9,6 +9,9 @@ plexi.module('Behavior', function (require, define) {
 
   Behavior.prototype.applyToKlass = function (klass) {
     Object.keys(this.constructor.prototype).forEach(function (k) {
+      if(klass.prototype.hasOwnProperty(k)) {
+        console.log('existing property: ' + k + ' on instance: ' + klass.id);
+      }
       klass.prototype[k] = this.constructor.prototype[k];
     }.bind(this));
 

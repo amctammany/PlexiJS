@@ -7,8 +7,8 @@ plexi.behavior('WorldSelectable', function (require, define) {
   var Canvas = require('Canvas');
   var BodyType = require('BodyType');
   Selectable.prototype.select = function (x, y) {
-    this.dragStart.x = x;
-    this.dragStart.y = y;
+    //this.dragStart.x = x;
+    //this.dragStart.y = y;
     var ctx = Canvas.current().ctx;
     var bodies = this.bodies.filter(function (b) {
       return BodyType.get(b.type).isPointInPath(ctx, b, x, y);

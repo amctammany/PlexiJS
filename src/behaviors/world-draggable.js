@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 plexi.behavior('WorldDraggable', function (require, define) {
   var Draggable = function () {
@@ -31,7 +31,7 @@ plexi.behavior('WorldDraggable', function (require, define) {
     });
   };
   Draggable.prototype.dragSelection = function (x, y) {
-    console.log('drag from behavior');
+    //console.log('drag from behavior');
     var dx = this.dragStart.x - x;
     var dy = this.dragStart.y - y;
     this.dragStart = {x: x, y: y};
@@ -44,7 +44,7 @@ plexi.behavior('WorldDraggable', function (require, define) {
 
   Draggable.dispatch = {
     drag: function (x, y) {
-      console.log(Array.prototype.slice.call(arguments));
+      //console.log(Array.prototype.slice.call(arguments));
       this.dragSelection(x, y);
     },
   };

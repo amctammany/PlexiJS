@@ -112,7 +112,7 @@ plexi.module('World', function (require, define) {
     //},
 
     createBody: function (type, config) {
-      return createBody(type, config);
+      return World.createBody(type, config);
     },
     reset: function () {
       this.reset();

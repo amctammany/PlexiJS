@@ -29,8 +29,8 @@ plexi.module('Stage', function (require, define) {
 
   Stage.prototype.loadLevel = function (id) {
     var level = Level.get(id);
-    console.log(level);
-    level.dirty = true;
+    //console.log(level);
+    level.loaded = false;
     level.init();
     require('World').current().load(level);
 
@@ -43,7 +43,7 @@ plexi.module('Stage', function (require, define) {
   };
 
   Stage.dispatch = {
-    'change': function (args) {
+    change: function (args) {
       this.reset();
       plexi.publish([['World', 'reset'], ['Game', 'refresh']]);
     },

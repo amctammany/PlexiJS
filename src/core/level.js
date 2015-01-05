@@ -16,24 +16,25 @@ plexi.module('Level', function (require, define) {
   };
 
   Level.prototype.init = function () {
-    //if (!this.dirty) {return false;}
+    if (!this.dirty) {return false;}
     if (this.loaded === true) { return; }
     console.log('regular init');
     this.bodies = this.config.bodies.map(function (body) {
       return {type: body.type, config: body};
     });
     this.loaded = false;
+    this.dirty = false;
     return this;
   };
 
   Level.prototype.reset = function () {
-    this.init();
-    this.dirty = false;
+    this.dirty = true;
+    //this.init();
   };
 
   Level.dispatch = {
     change: function (id) {
-      console.log('changed level');
+      //console.log('changed level');
       this.reset();
       plexi.publish(['Stage', 'loadLevel', id]);
     },

@@ -94,6 +94,7 @@ var plexi = (function () {
         var Klass = function () {
           constructor.call(this, id, config);
         };
+        Klass.id = id;
         Klass.prototype = Object.create(constructor.prototype);
         Klass.prototype.constructor = constructor;
         //console.log(Object.keys(constructor))
