@@ -6,6 +6,8 @@ plexi.behavior('Outlet', function (require, define) {
     this.addProps(['channel', 'defaultText']);
   };
 
+  Outlet.klass = 'BodyType';
+
   Outlet.prototype = {
     init: function (body) {
       //console.log('init outlet');

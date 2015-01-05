@@ -1,9 +1,10 @@
-'use strict'
+'use strict';
 
 plexi.behavior('WorldSelectable', function (require, define) {
   var Selectable = function () {
     this.selection = [];
   };
+  Selectable.klass = 'World';
   var Canvas = require('Canvas');
   var BodyType = require('BodyType');
   Selectable.prototype.select = function (x, y) {

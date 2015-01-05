@@ -5,6 +5,8 @@ plexi.behavior('Selectable', function (require, define) {
     this.addProps(['selectAction']);
   };
 
+  Selectable.klass = 'BodyType';
+
   function applyAction(self, action, body) {
     var fn = action[0];
     if (fn[0] === '@') {

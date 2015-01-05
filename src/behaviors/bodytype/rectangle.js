@@ -6,6 +6,8 @@ plexi.behavior('Rectangle', function (require, define) {
     this.opacity = 1;
   };
 
+  Rectangle.klass = 'BodyType';
+
   Rectangle.prototype = {
     draw: function (ctx, body) {
       ctx.fillStyle = this.prop(body, 'fill');

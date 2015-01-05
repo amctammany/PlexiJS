@@ -5,6 +5,8 @@ plexi.behavior('Circle', function (require, define) {
     this.addProps(['x', 'y', 'radius']);
   };
 
+  Circle.klass = 'BodyType';
+
   Circle.prototype = {
 
     draw: function (ctx, body) {

@@ -13,6 +13,8 @@ plexi.behavior('LevelFlood', function (require, define) {
     this.floodFound = 0;
   };
 
+  Flood.klass = 'Level';
+
   Flood.prototype = {
     flood: function (row, column, fill) {
       //console.log(this.translateCell(index, 0));

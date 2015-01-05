@@ -8,6 +8,9 @@ plexi.behavior('LevelTiled', function (require, define) {
     this.size = this.prop(this, 'rows') * this.prop(this, 'columns');
     this.cells = Array.apply(0, new Array(this.size)).map(function () {return {};});
   };
+
+  Tiled.klass = 'Level';
+
   Tiled.prototype = {
     init: function () {
       //console.log(this.constructor.prototype.init)

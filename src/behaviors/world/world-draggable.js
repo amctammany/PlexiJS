@@ -5,6 +5,8 @@ plexi.behavior('WorldDraggable', function (require, define) {
     this.selection = [];
     this.dragStart = {};
   };
+
+  Draggable.klass = 'World';
   var Canvas = require('Canvas');
   var BodyType = require('BodyType');
   Draggable.prototype.select = function (x, y) {
